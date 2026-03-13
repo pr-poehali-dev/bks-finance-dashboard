@@ -1,3 +1,13 @@
+export interface RequestItem {
+  id: string;
+  number: string;
+  description: string;
+  amount: number;
+  date: string;
+  initiator: string;
+  status: "approved" | "pending" | "rejected";
+}
+
 export interface BudgetRow {
   id: string;
   cfo: string;
@@ -7,6 +17,7 @@ export interface BudgetRow {
   deviation: number;
   execution: number;
   status: "ok" | "warning" | "danger";
+  requests: RequestItem[];
 }
 
 export interface KPIData {
@@ -90,6 +101,11 @@ export const budgetData: BudgetRow[] = [
     deviation: -7200000,
     execution: 94.3,
     status: "ok",
+    requests: [
+      { id: "r1-1", number: "З-2026-0041", description: "Премирование Q1 — аналитики", amount: 42500000, date: "15.01.2026", initiator: "Козлов А.В.", status: "approved" },
+      { id: "r1-2", number: "З-2026-0042", description: "Оклады сотрудников — январь", amount: 38200000, date: "10.01.2026", initiator: "Козлов А.В.", status: "approved" },
+      { id: "r1-3", number: "З-2026-0098", description: "Оклады сотрудников — февраль", amount: 37500000, date: "10.02.2026", initiator: "Козлов А.В.", status: "approved" },
+    ],
   },
   {
     id: "2",
@@ -100,6 +116,11 @@ export const budgetData: BudgetRow[] = [
     deviation: -2900000,
     execution: 93.6,
     status: "ok",
+    requests: [
+      { id: "r2-1", number: "З-2026-0055", description: "Лицензии Bloomberg Terminal — продление", amount: 18600000, date: "20.01.2026", initiator: "Семёнов Д.К.", status: "approved" },
+      { id: "r2-2", number: "З-2026-0087", description: "Серверное оборудование — обновление", amount: 15200000, date: "05.02.2026", initiator: "Семёнов Д.К.", status: "approved" },
+      { id: "r2-3", number: "З-2026-0121", description: "СХД — расширение хранилища", amount: 8300000, date: "28.02.2026", initiator: "Петров И.С.", status: "approved" },
+    ],
   },
   {
     id: "3",
@@ -110,6 +131,12 @@ export const budgetData: BudgetRow[] = [
     deviation: 3500000,
     execution: 101.8,
     status: "warning",
+    requests: [
+      { id: "r3-1", number: "З-2026-0033", description: "Оклады — отдел продаж, январь", amount: 65000000, date: "10.01.2026", initiator: "Иванова М.П.", status: "approved" },
+      { id: "r3-2", number: "З-2026-0034", description: "Бонусы за привлечение клиентов Q4'25", amount: 48500000, date: "15.01.2026", initiator: "Иванова М.П.", status: "approved" },
+      { id: "r3-3", number: "З-2026-0099", description: "Оклады — отдел продаж, февраль", amount: 65000000, date: "10.02.2026", initiator: "Иванова М.П.", status: "approved" },
+      { id: "r3-4", number: "З-2026-0145", description: "Доплата за расширение штата — 3 чел.", amount: 23000000, date: "01.03.2026", initiator: "Иванова М.П.", status: "approved" },
+    ],
   },
   {
     id: "4",
@@ -120,6 +147,12 @@ export const budgetData: BudgetRow[] = [
     deviation: 11900000,
     execution: 117.8,
     status: "danger",
+    requests: [
+      { id: "r4-1", number: "З-2026-0060", description: "Digital-кампания «Инвестируй легко»", amount: 32000000, date: "22.01.2026", initiator: "Сидоров Р.Н.", status: "approved" },
+      { id: "r4-2", number: "З-2026-0088", description: "Спонсорство финансовой конференции", amount: 15000000, date: "06.02.2026", initiator: "Сидоров Р.Н.", status: "approved" },
+      { id: "r4-3", number: "З-2026-0112", description: "Внеплановая кампания — таргетинг feb'26", amount: 18900000, date: "18.02.2026", initiator: "Сидоров Р.Н.", status: "approved" },
+      { id: "r4-4", number: "З-2026-0150", description: "Наружная реклама — Москва, СПб", amount: 13000000, date: "03.03.2026", initiator: "Сидоров Р.Н.", status: "pending" },
+    ],
   },
   {
     id: "5",
@@ -130,6 +163,10 @@ export const budgetData: BudgetRow[] = [
     deviation: -3600000,
     execution: 88.8,
     status: "ok",
+    requests: [
+      { id: "r5-1", number: "З-2026-0070", description: "Аудит сделок M&A — PwC", amount: 16400000, date: "25.01.2026", initiator: "Кузнецов В.А.", status: "approved" },
+      { id: "r5-2", number: "З-2026-0130", description: "Юридический консалтинг — IPO проект", amount: 12000000, date: "25.02.2026", initiator: "Кузнецов В.А.", status: "approved" },
+    ],
   },
   {
     id: "6",
@@ -140,6 +177,11 @@ export const budgetData: BudgetRow[] = [
     deviation: -1800000,
     execution: 98.0,
     status: "ok",
+    requests: [
+      { id: "r6-1", number: "З-2026-0038", description: "Оклады — казначейство, январь", amount: 29500000, date: "10.01.2026", initiator: "Орлова Т.Г.", status: "approved" },
+      { id: "r6-2", number: "З-2026-0095", description: "Оклады — казначейство, февраль", amount: 29200000, date: "10.02.2026", initiator: "Орлова Т.Г.", status: "approved" },
+      { id: "r6-3", number: "З-2026-0148", description: "Оклады — казначейство, март", amount: 28500000, date: "10.03.2026", initiator: "Орлова Т.Г.", status: "approved" },
+    ],
   },
   {
     id: "7",
@@ -150,6 +192,11 @@ export const budgetData: BudgetRow[] = [
     deviation: 5200000,
     execution: 109.3,
     status: "warning",
+    requests: [
+      { id: "r7-1", number: "З-2026-0072", description: "Лицензии SAS Risk Management", amount: 22000000, date: "28.01.2026", initiator: "Белов К.И.", status: "approved" },
+      { id: "r7-2", number: "З-2026-0110", description: "Обновление системы риск-мониторинга", amount: 24000000, date: "15.02.2026", initiator: "Белов К.И.", status: "approved" },
+      { id: "r7-3", number: "З-2026-0140", description: "Внеплановая миграция на новый кластер", amount: 15200000, date: "01.03.2026", initiator: "Белов К.И.", status: "pending" },
+    ],
   },
   {
     id: "8",
@@ -160,6 +207,12 @@ export const budgetData: BudgetRow[] = [
     deviation: -3500000,
     execution: 97.5,
     status: "ok",
+    requests: [
+      { id: "r8-1", number: "З-2026-0045", description: "Датацентр — аренда стоек Q1", amount: 48000000, date: "12.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+      { id: "r8-2", number: "З-2026-0046", description: "Сетевое оборудование Cisco — обновление", amount: 35000000, date: "12.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+      { id: "r8-3", number: "З-2026-0100", description: "Лицензии Microsoft 365 — годовые", amount: 28500000, date: "12.02.2026", initiator: "Григорьев А.П.", status: "approved" },
+      { id: "r8-4", number: "З-2026-0135", description: "Кибербезопасность — Kaspersky, CrowdStrike", amount: 27000000, date: "22.02.2026", initiator: "Григорьев А.П.", status: "approved" },
+    ],
   },
   {
     id: "9",
@@ -170,6 +223,11 @@ export const budgetData: BudgetRow[] = [
     deviation: -900000,
     execution: 97.6,
     status: "ok",
+    requests: [
+      { id: "r9-1", number: "З-2026-0050", description: "Аренда офиса — Москва-Сити, Q1", amount: 28000000, date: "15.01.2026", initiator: "Новикова Е.С.", status: "approved" },
+      { id: "r9-2", number: "З-2026-0085", description: "Коммунальные платежи — январь-февраль", amount: 5600000, date: "05.02.2026", initiator: "Новикова Е.С.", status: "approved" },
+      { id: "r9-3", number: "З-2026-0142", description: "Клининг и техобслуживание", amount: 3500000, date: "02.03.2026", initiator: "Новикова Е.С.", status: "approved" },
+    ],
   },
   {
     id: "10",
@@ -180,6 +238,12 @@ export const budgetData: BudgetRow[] = [
     deviation: 3900000,
     execution: 145.9,
     status: "danger",
+    requests: [
+      { id: "r10-1", number: "З-2026-0078", description: "Внедрение CRM — выезд в Новосибирск", amount: 3200000, date: "01.02.2026", initiator: "Волков С.М.", status: "approved" },
+      { id: "r10-2", number: "З-2026-0105", description: "Настройка филиала — Екатеринбург", amount: 2800000, date: "12.02.2026", initiator: "Волков С.М.", status: "approved" },
+      { id: "r10-3", number: "З-2026-0125", description: "Миграция серверов — Краснодар", amount: 3400000, date: "20.02.2026", initiator: "Волков С.М.", status: "approved" },
+      { id: "r10-4", number: "З-2026-0155", description: "Обучение персонала — Казань", amount: 3000000, date: "05.03.2026", initiator: "Волков С.М.", status: "pending" },
+    ],
   },
   {
     id: "11",
@@ -190,6 +254,11 @@ export const budgetData: BudgetRow[] = [
     deviation: -5200000,
     execution: 97.0,
     status: "ok",
+    requests: [
+      { id: "r11-1", number: "З-2026-0036", description: "Оклады — инвестбанкиры, январь", amount: 58000000, date: "10.01.2026", initiator: "Кузнецов В.А.", status: "approved" },
+      { id: "r11-2", number: "З-2026-0093", description: "Оклады — инвестбанкиры, февраль", amount: 56800000, date: "10.02.2026", initiator: "Кузнецов В.А.", status: "approved" },
+      { id: "r11-3", number: "З-2026-0146", description: "Оклады — инвестбанкиры, март", amount: 55000000, date: "10.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
+    ],
   },
   {
     id: "12",
@@ -200,6 +269,10 @@ export const budgetData: BudgetRow[] = [
     deviation: 0,
     execution: 100.0,
     status: "ok",
+    requests: [
+      { id: "r12-1", number: "З-2026-0052", description: "Амортизация ОС — Q1 (план)", amount: 14000000, date: "15.01.2026", initiator: "Орлова Т.Г.", status: "approved" },
+      { id: "r12-2", number: "З-2026-0115", description: "Амортизация НМА — Q1 (план)", amount: 8000000, date: "15.02.2026", initiator: "Орлова Т.Г.", status: "approved" },
+    ],
   },
 ];
 
