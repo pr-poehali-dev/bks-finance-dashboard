@@ -213,6 +213,63 @@ export const cfoSummary = [
   { name: "HR и администрация", plan: 38000, fact: 37100, execution: 97.6 },
 ];
 
+export const monthlyTrend = [
+  { month: "Окт", plan: 270, fact: 255 },
+  { month: "Ноя", plan: 285, fact: 278 },
+  { month: "Дек", plan: 310, fact: 325 },
+  { month: "Янв", plan: 275, fact: 268 },
+  { month: "Фев", plan: 290, fact: 282 },
+  { month: "Мар", plan: 282, fact: 263 },
+];
+
+export const expenseStructure = [
+  { name: "ФОТ", value: 576.7, fill: "#2563eb" },
+  { name: "ИТ-инфраструктура", value: 241.8, fill: "#3b82f6" },
+  { name: "Маркетинг", value: 78.9, fill: "#60a5fa" },
+  { name: "Аренда", value: 37.1, fill: "#93bbfd" },
+  { name: "Консалтинг", value: 28.4, fill: "#bfdbfe" },
+  { name: "Прочие", value: 34.3, fill: "#dbeafe" },
+];
+
+export interface AIInsight {
+  type: "danger" | "warning" | "success" | "info";
+  title: string;
+  description: string;
+  metric: string;
+  action: string;
+}
+
+export const aiInsights: AIInsight[] = [
+  {
+    type: "danger",
+    title: "Перерасход на маркетинг в Брокерском обслуживании",
+    description: "Расходы на маркетинг и рекламу превысили план на ₽11.9 млн (117.8%). Основной драйвер — незапланированная digital-кампания в феврале.",
+    metric: "+₽11.9 млн",
+    action: "Рекомендация: пересмотреть маркетинговый бюджет Q2, перенести часть расходов из резервного фонда или скорректировать план.",
+  },
+  {
+    type: "danger",
+    title: "Командировочные ИТ-департамента — критическое превышение",
+    description: "Командировочные расходы составили 145.9% от плана (+₽3.9 млн). Выявлены незапланированные выезды на внедрение систем в филиалах.",
+    metric: "+145.9%",
+    action: "Рекомендация: ввести предварительное согласование командировок свыше ₽500 тыс., рассмотреть удалённое внедрение.",
+  },
+  {
+    type: "warning",
+    title: "Рост ИТ-расходов в Управлении рисками",
+    description: "ИТ-инфраструктура превышает план на 9.3% (+₽5.2 млн). Связано с незапланированным обновлением системы риск-мониторинга.",
+    metric: "+₽5.2 млн",
+    action: "Рекомендация: включить затраты в план Q2, согласовать с ИТ-департаментом единый график обновлений.",
+  },
+  {
+    type: "success",
+    title: "Эффективная экономия в Управлении активами",
+    description: "ЦФО показывает исполнение 94.1% — экономия ₽10.1 млн без ущерба для операционных показателей. Лучший результат среди подразделений.",
+    metric: "-₽10.1 млн",
+    action: "Рекомендация: транслировать практики бюджетной дисциплины на другие ЦФО, премировать ответственных.",
+  },
+];
+
 export default {
   kpiData,
   budgetData,
@@ -220,4 +277,7 @@ export default {
   articleList,
   periodOptions,
   cfoSummary,
+  monthlyTrend,
+  expenseStructure,
+  aiInsights,
 };

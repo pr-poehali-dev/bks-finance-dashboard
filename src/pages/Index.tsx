@@ -4,6 +4,9 @@ import KPICard from "@/components/dashboard/KPICard";
 import Filters from "@/components/dashboard/Filters";
 import BudgetTable from "@/components/dashboard/BudgetTable";
 import CFOChart from "@/components/dashboard/CFOChart";
+import AIInsights from "@/components/dashboard/AIInsights";
+import BudgetTrendChart from "@/components/dashboard/BudgetTrendChart";
+import ExpenseDonutChart from "@/components/dashboard/ExpenseDonutChart";
 import { kpiData, budgetData } from "@/data/mockData";
 
 const Index = () => {
@@ -52,7 +55,12 @@ const Index = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <BudgetTrendChart />
+          <ExpenseDonutChart />
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
           <div className="xl:col-span-2">
             <BudgetTable data={filteredData} />
           </div>
@@ -60,6 +68,8 @@ const Index = () => {
             <CFOChart />
           </div>
         </div>
+
+        <AIInsights />
       </main>
     </div>
   );
