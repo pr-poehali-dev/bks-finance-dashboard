@@ -20,7 +20,7 @@ const KPICard = ({ data, index }: KPICardProps) => {
         {data.change !== 0 && data.title !== "Общий бюджет" && data.title !== "Заявки" && (
           <span
             className={`text-xs font-medium px-2 py-1 rounded-full ${
-              data.change > 0
+              (data.title === "Исполнение" ? data.change <= 100 : data.change > 0)
                 ? "bg-emerald-50 text-emerald-700"
                 : "bg-red-50 text-red-600"
             }`}
