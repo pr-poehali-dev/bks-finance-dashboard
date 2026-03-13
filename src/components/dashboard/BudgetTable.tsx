@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import {
   Table,
   TableBody,
@@ -174,9 +174,8 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
               const config = statusConfig[row.status];
               const isExpanded = expandedRow === row.id;
               return (
-                <>
+                <Fragment key={row.id}>
                   <TableRow
-                    key={row.id}
                     className={`hover:bg-muted/30 transition-colors cursor-pointer select-none ${isExpanded ? "bg-muted/20" : ""}`}
                     onClick={() => toggleRow(row.id)}
                   >
@@ -242,7 +241,7 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
                   {isExpanded && row.requests.length > 0 && (
                     <RequestsPanel key={`${row.id}-requests`} requests={row.requests} />
                   )}
-                </>
+                </Fragment>
               );
             })}
           </TableBody>
