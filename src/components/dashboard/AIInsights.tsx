@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
 import type { AIInsight } from "@/data/mockData";
-import { aiInsights } from "@/data/mockData";
 
 const typeConfig = {
   danger: {
@@ -86,7 +85,11 @@ const InsightCard = ({ insight, index }: { insight: AIInsight; index: number }) 
   );
 };
 
-const AIInsights = () => {
+interface AIInsightsProps {
+  data: AIInsight[];
+}
+
+const AIInsights = ({ data }: AIInsightsProps) => {
   return (
     <Card className="border-0 shadow-sm p-5 animate-slide-up" style={{ animationDelay: "350ms" }}>
       <div className="flex items-center gap-2.5 mb-4">
@@ -104,7 +107,7 @@ const AIInsights = () => {
       </div>
 
       <div className="space-y-2.5">
-        {aiInsights.map((insight, idx) => (
+        {data.map((insight, idx) => (
           <InsightCard key={idx} insight={insight} index={idx} />
         ))}
       </div>

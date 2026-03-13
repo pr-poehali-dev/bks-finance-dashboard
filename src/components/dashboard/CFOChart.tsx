@@ -1,8 +1,18 @@
 import { Card } from "@/components/ui/card";
-import { cfoSummary } from "@/data/mockData";
 
-const CFOChart = () => {
-  const maxValue = Math.max(...cfoSummary.map((d) => Math.max(d.plan, d.fact)));
+interface CFOSummaryItem {
+  name: string;
+  plan: number;
+  fact: number;
+  execution: number;
+}
+
+interface CFOChartProps {
+  data: CFOSummaryItem[];
+}
+
+const CFOChart = ({ data }: CFOChartProps) => {
+  const maxValue = data.length > 0 ? Math.max(...data.map((d) => Math.max(d.plan, d.fact))) : 1;
 
   return (
     <Card className="border-0 shadow-sm p-5 animate-slide-up" style={{ animationDelay: "400ms" }}>
@@ -27,7 +37,7 @@ const CFOChart = () => {
       </div>
 
       <div className="space-y-3">
-        {cfoSummary.map((item) => (
+        {data.map((item) => (
           <div key={item.name} className="group">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-sm font-medium text-foreground truncate max-w-[200px]">
@@ -61,6 +71,9 @@ const CFOChart = () => {
             </div>
           </div>
         ))}
+        {data.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-8">Нет данных для выбранных фильтров</p>
+        )}
       </div>
     </Card>
   );

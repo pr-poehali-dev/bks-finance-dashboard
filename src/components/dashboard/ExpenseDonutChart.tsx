@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card";
-import { expenseStructure } from "@/data/mockData";
 import {
   PieChart,
   Pie,
@@ -8,10 +7,20 @@ import {
   Tooltip,
 } from "recharts";
 
+interface ExpenseItem {
+  name: string;
+  value: number;
+  fill: string;
+}
+
 interface TooltipEntry {
   name: string;
   value: number;
   payload: { fill: string };
+}
+
+interface ExpenseDonutChartProps {
+  data: ExpenseItem[];
 }
 
 const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: TooltipEntry[] }) => {
@@ -28,8 +37,8 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Toolti
   );
 };
 
-const ExpenseDonutChart = () => {
-  const total = expenseStructure.reduce((s, d) => s + d.value, 0);
+const ExpenseDonutChart = ({ data }: ExpenseDonutChartProps) => {
+  const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
     <Card className="border-0 shadow-sm p-5 animate-slide-up" style={{ animationDelay: "500ms" }}>
@@ -47,7 +56,7 @@ const ExpenseDonutChart = () => {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={expenseStructure}
+                data={data}
                 cx="50%"
                 cy="50%"
                 innerRadius={60}
@@ -56,7 +65,7 @@ const ExpenseDonutChart = () => {
                 dataKey="value"
                 stroke="none"
               >
-                {expenseStructure.map((entry, index) => (
+                {data.map((entry, index) => (
                   <Cell key={index} fill={entry.fill} />
                 ))}
               </Pie>
@@ -70,7 +79,7 @@ const ExpenseDonutChart = () => {
         </div>
 
         <div className="flex-1 space-y-2">
-          {expenseStructure.map((item) => (
+          {data.map((item) => (
             <div key={item.name} className="flex items-center justify-between text-xs">
               <span className="flex items-center gap-2 text-muted-foreground">
                 <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.fill }} />
@@ -81,7 +90,7 @@ const ExpenseDonutChart = () => {
                   {item.value}
                 </span>
                 <span className="text-muted-foreground tabular-nums w-[36px] text-right">
-                  {((item.value / total) * 100).toFixed(0)}%
+                  {total > 0 ? ((item.value / total) * 100).toFixed(0) : 0}%
                 </span>
               </div>
             </div>

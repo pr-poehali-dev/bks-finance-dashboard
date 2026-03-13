@@ -1,13 +1,15 @@
-import { cfoList, articleList, periodOptions } from "@/data/mockData";
+import { cfoList, articleList, periodOptions, categoryList } from "@/data/mockData";
 import Icon from "@/components/ui/icon";
 
 interface FiltersProps {
   selectedCfo: string;
   selectedArticle: string;
   selectedPeriod: string;
+  selectedCategory: string;
   onCfoChange: (value: string) => void;
   onArticleChange: (value: string) => void;
   onPeriodChange: (value: string) => void;
+  onCategoryChange: (value: string) => void;
 }
 
 const SelectField = ({
@@ -50,9 +52,11 @@ const Filters = ({
   selectedCfo,
   selectedArticle,
   selectedPeriod,
+  selectedCategory,
   onCfoChange,
   onArticleChange,
   onPeriodChange,
+  onCategoryChange,
 }: FiltersProps) => {
   return (
     <div className="flex flex-wrap gap-3 animate-fade-in" style={{ animationDelay: "100ms" }}>
@@ -73,6 +77,12 @@ const Filters = ({
         onChange={onArticleChange}
         options={articleList}
         icon="Tag"
+      />
+      <SelectField
+        value={selectedCategory}
+        onChange={onCategoryChange}
+        options={categoryList}
+        icon="Layers"
       />
     </div>
   );

@@ -60,7 +60,7 @@ const requestStatusConfig = {
 const RequestsPanel = ({ requests }: { requests: RequestItem[] }) => {
   return (
     <TableRow>
-      <TableCell colSpan={7} className="p-0 border-0">
+      <TableCell colSpan={8} className="p-0 border-0">
         <div className="bg-muted/20 border-t border-b border-border/40 px-5 py-3 animate-fade-in">
           <div className="flex items-center gap-2 mb-3">
             <Icon name="FileStack" size={14} className="text-primary" />
@@ -109,6 +109,11 @@ const RequestsPanel = ({ requests }: { requests: RequestItem[] }) => {
   );
 };
 
+const categoryBadge = {
+  Run: { bg: "bg-blue-50", text: "text-blue-700", label: "Run" },
+  Change: { bg: "bg-violet-50", text: "text-violet-700", label: "Change" },
+};
+
 const BudgetTable = ({ data }: BudgetTableProps) => {
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
@@ -146,11 +151,14 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/40 hover:bg-muted/40">
-              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[200px]">
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground w-[180px]">
                 ЦФО
               </TableHead>
               <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Статья
+              </TableHead>
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-center w-[70px]">
+                Тип
               </TableHead>
               <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-right">
                 План
@@ -172,6 +180,7 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
           <TableBody>
             {data.map((row) => {
               const config = statusConfig[row.status];
+              const catBadge = categoryBadge[row.category];
               const isExpanded = expandedRow === row.id;
               return (
                 <Fragment key={row.id}>
@@ -186,11 +195,16 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
                           size={14}
                           className="text-muted-foreground flex-shrink-0 transition-transform"
                         />
-                        {row.cfo}
+                        <span className="truncate">{row.cfo}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {row.article}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${catBadge.bg} ${catBadge.text}`}>
+                        {catBadge.label}
+                      </span>
                     </TableCell>
                     <TableCell className="text-sm text-right font-medium tabular-nums">
                       ₽ {formatCurrency(row.plan)}
@@ -204,34 +218,32 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
                           ? "text-red-600"
                           : row.deviation < 0
                             ? "text-emerald-600"
-                            : "text-muted-foreground"
+                            : ""
                       }`}
                     >
                       {row.deviation > 0 ? "+" : ""}
-                      {formatCurrency(row.deviation)}
+                      {row.deviation !== 0 ? `₽ ${formatCurrency(row.deviation)}` : "—"}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-sm text-right tabular-nums">
                       <div className="flex items-center justify-end gap-2">
-                        <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden hidden sm:block">
                           <div
                             className={`h-full rounded-full transition-all duration-500 ${
-                              row.status === "ok"
+                              row.execution <= 100
                                 ? "bg-emerald-500"
-                                : row.status === "warning"
+                                : row.execution <= 110
                                   ? "bg-amber-500"
                                   : "bg-red-500"
                             }`}
                             style={{ width: `${Math.min(row.execution, 100)}%` }}
                           />
                         </div>
-                        <span className="text-sm font-semibold tabular-nums min-w-[52px]">
-                          {row.execution.toFixed(1)}%
-                        </span>
+                        <span className="font-medium">{row.execution}%</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-center">
                       <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${config.bg} ${config.text}`}
                       >
                         <Icon name={config.icon} size={12} />
                         {config.label}

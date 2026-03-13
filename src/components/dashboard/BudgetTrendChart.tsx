@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card";
-import { monthlyTrend } from "@/data/mockData";
 import {
   AreaChart,
   Area,
@@ -15,6 +14,10 @@ interface TooltipEntry {
   name: string;
   value: number;
   color: string;
+}
+
+interface BudgetTrendChartProps {
+  data: { month: string; plan: number; fact: number }[];
 }
 
 const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TooltipEntry[]; label?: string }) => {
@@ -35,7 +38,7 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
   );
 };
 
-const BudgetTrendChart = () => {
+const BudgetTrendChart = ({ data }: BudgetTrendChartProps) => {
   return (
     <Card className="border-0 shadow-sm p-5 animate-slide-up" style={{ animationDelay: "450ms" }}>
       <div className="mb-4">
@@ -49,7 +52,7 @@ const BudgetTrendChart = () => {
 
       <div className="h-[260px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={monthlyTrend} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+          <AreaChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="planGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#93bbfd" stopOpacity={0.3} />

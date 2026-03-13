@@ -7,22 +7,57 @@ import CFOChart from "@/components/dashboard/CFOChart";
 import AIInsights from "@/components/dashboard/AIInsights";
 import BudgetTrendChart from "@/components/dashboard/BudgetTrendChart";
 import ExpenseDonutChart from "@/components/dashboard/ExpenseDonutChart";
-import { kpiData, budgetData } from "@/data/mockData";
+import CategoryBreakdown from "@/components/dashboard/CategoryBreakdown";
+import {
+  getFilteredBudgetData,
+  getKPIData,
+  getCFOSummary,
+  getMonthlyTrend,
+  getExpenseStructure,
+  getAIInsights,
+  getCategoryBreakdown,
+} from "@/data/mockData";
 
 const Index = () => {
   const [selectedCfo, setSelectedCfo] = useState("Все ЦФО");
   const [selectedArticle, setSelectedArticle] = useState("Все статьи");
   const [selectedPeriod, setSelectedPeriod] = useState("Q1 2026");
+  const [selectedCategory, setSelectedCategory] = useState("Все категории");
 
-  const filteredData = useMemo(() => {
-    return budgetData.filter((row) => {
-      const cfoMatch =
-        selectedCfo === "Все ЦФО" || row.cfo === selectedCfo;
-      const articleMatch =
-        selectedArticle === "Все статьи" || row.article === selectedArticle;
-      return cfoMatch && articleMatch;
-    });
-  }, [selectedCfo, selectedArticle]);
+  const filteredData = useMemo(
+    () => getFilteredBudgetData(selectedPeriod, selectedCfo, selectedArticle, selectedCategory),
+    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory]
+  );
+
+  const kpiData = useMemo(
+    () => getKPIData(selectedPeriod, selectedCfo, selectedArticle, selectedCategory),
+    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory]
+  );
+
+  const cfoData = useMemo(
+    () => getCFOSummary(selectedPeriod, selectedArticle, selectedCategory),
+    [selectedPeriod, selectedArticle, selectedCategory]
+  );
+
+  const trendData = useMemo(
+    () => getMonthlyTrend(selectedCfo, selectedArticle, selectedCategory),
+    [selectedCfo, selectedArticle, selectedCategory]
+  );
+
+  const expenseData = useMemo(
+    () => getExpenseStructure(selectedPeriod, selectedCfo, selectedCategory),
+    [selectedPeriod, selectedCfo, selectedCategory]
+  );
+
+  const insightsData = useMemo(
+    () => getAIInsights(selectedPeriod, selectedCfo, selectedArticle, selectedCategory),
+    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory]
+  );
+
+  const categoryData = useMemo(
+    () => getCategoryBreakdown(selectedPeriod, selectedCfo, selectedArticle),
+    [selectedPeriod, selectedCfo, selectedArticle]
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -43,9 +78,11 @@ const Index = () => {
             selectedCfo={selectedCfo}
             selectedArticle={selectedArticle}
             selectedPeriod={selectedPeriod}
+            selectedCategory={selectedCategory}
             onCfoChange={setSelectedCfo}
             onArticleChange={setSelectedArticle}
             onPeriodChange={setSelectedPeriod}
+            onCategoryChange={setSelectedCategory}
           />
         </div>
 
@@ -55,21 +92,21 @@ const Index = () => {
           ))}
         </div>
 
-        <AIInsights />
+        <AIInsights data={insightsData} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 mt-6">
-          <BudgetTrendChart />
-          <ExpenseDonutChart />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 mt-6">
+          <div className="lg:col-span-2">
+            <BudgetTrendChart data={trendData} />
+          </div>
+          <CategoryBreakdown data={categoryData} />
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-          <div className="xl:col-span-2">
-            <BudgetTable data={filteredData} />
-          </div>
-          <div>
-            <CFOChart />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <ExpenseDonutChart data={expenseData} />
+          <CFOChart data={cfoData} />
         </div>
+
+        <BudgetTable data={filteredData} />
       </main>
     </div>
   );
