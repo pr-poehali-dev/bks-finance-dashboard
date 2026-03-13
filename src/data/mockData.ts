@@ -61,6 +61,11 @@ export const articleList = [
   "Командировочные",
   "Консалтинг и аудит",
   "Амортизация",
+  "Обучение и развитие",
+  "Страхование",
+  "Представительские",
+  "Связь и телеком",
+  "Лицензии и подписки",
   "Прочие расходы",
 ];
 
@@ -253,6 +258,58 @@ const allBudgetData: Record<string, BudgetRow[]> = {
         { id: "rj20-3", number: "З-2026-0066", description: "ДМС — новые сотрудники", amount: 2000000, date: "25.01.2026", initiator: "Белов К.И.", status: "approved" },
       ],
     },
+    {
+      id: "j21", cfo: "Брокерское обслуживание", article: "Обучение и развитие", category: "Run",
+      plan: 4500000, fact: 4200000, deviation: -300000, execution: 93.3, status: "ok",
+      requests: [
+        { id: "rj21-1", number: "З-2026-0094", description: "Тренинг по продажам — внешний провайдер", amount: 2200000, date: "18.01.2026", initiator: "Иванова М.П.", status: "approved" },
+        { id: "rj21-2", number: "З-2026-0095", description: "Подписка Coursera Business — 50 лицензий", amount: 1200000, date: "22.01.2026", initiator: "Иванова М.П.", status: "approved" },
+        { id: "rj21-3", number: "З-2026-0096", description: "Семинар по комплаенсу — ЦБ", amount: 800000, date: "25.01.2026", initiator: "Иванова М.П.", status: "approved" },
+      ],
+    },
+    {
+      id: "j22", cfo: "Управление рисками", article: "Обучение и развитие", category: "Change",
+      plan: 3000000, fact: 3500000, deviation: 500000, execution: 116.7, status: "warning",
+      requests: [
+        { id: "rj22-1", number: "З-2026-0097", description: "Программа сертификации PRM — 8 сотр.", amount: 2400000, date: "20.01.2026", initiator: "Белов К.И.", status: "approved" },
+        { id: "rj22-2", number: "З-2026-0098x", description: "Внешняя стажировка — Лондон, 2 чел.", amount: 1100000, date: "28.01.2026", initiator: "Белов К.И.", status: "approved" },
+      ],
+    },
+    {
+      id: "j23", cfo: "Казначейство", article: "Страхование", category: "Run",
+      plan: 5200000, fact: 5200000, deviation: 0, execution: 100.0, status: "ok",
+      requests: [
+        { id: "rj23-1", number: "З-2026-0053", description: "Страхование D&O — годовой полис", amount: 3200000, date: "12.01.2026", initiator: "Орлова Т.Г.", status: "approved" },
+        { id: "rj23-2", number: "З-2026-0054", description: "Страхование профответственности", amount: 2000000, date: "15.01.2026", initiator: "Орлова Т.Г.", status: "approved" },
+      ],
+    },
+    {
+      id: "j24", cfo: "Инвестиционный банкинг", article: "Представительские", category: "Run",
+      plan: 6000000, fact: 7200000, deviation: 1200000, execution: 120.0, status: "danger",
+      requests: [
+        { id: "rj24-1", number: "З-2026-0049", description: "Деловой ужин — клиенты M&A", amount: 2800000, date: "18.01.2026", initiator: "Кузнецов В.А.", status: "approved" },
+        { id: "rj24-2", number: "З-2026-0049b", description: "Аренда VIP-зала — презентация IPO", amount: 2400000, date: "25.01.2026", initiator: "Кузнецов В.А.", status: "approved" },
+        { id: "rj24-3", number: "З-2026-0049c", description: "Подарки партнёрам — Новый год (доп.)", amount: 2000000, date: "12.01.2026", initiator: "Кузнецов В.А.", status: "approved" },
+      ],
+    },
+    {
+      id: "j25", cfo: "ИТ-департамент", article: "Связь и телеком", category: "Run",
+      plan: 4800000, fact: 4600000, deviation: -200000, execution: 95.8, status: "ok",
+      requests: [
+        { id: "rj25-1", number: "З-2026-0076", description: "Корпоративная мобильная связь — январь", amount: 1800000, date: "15.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rj25-2", number: "З-2026-0077", description: "SIP-транки и VoIP — январь", amount: 1400000, date: "18.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rj25-3", number: "З-2026-0077b", description: "Выделенные каналы связи — филиалы", amount: 1400000, date: "22.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+      ],
+    },
+    {
+      id: "j26", cfo: "Управление активами", article: "Лицензии и подписки", category: "Run",
+      plan: 8500000, fact: 8200000, deviation: -300000, execution: 96.5, status: "ok",
+      requests: [
+        { id: "rj26-1", number: "З-2026-0015", description: "Reuters Datastream — годовая подписка", amount: 3800000, date: "10.01.2026", initiator: "Семёнов Д.К.", status: "approved" },
+        { id: "rj26-2", number: "З-2026-0016", description: "Morningstar Direct — лицензия", amount: 2600000, date: "15.01.2026", initiator: "Семёнов Д.К.", status: "approved" },
+        { id: "rj26-3", number: "З-2026-0017", description: "MSCI ESG Research — подписка", amount: 1800000, date: "20.01.2026", initiator: "Семёнов Д.К.", status: "approved" },
+      ],
+    },
   ],
   "Февраль 2026": [
     {
@@ -416,6 +473,56 @@ const allBudgetData: Record<string, BudgetRow[]> = {
         { id: "rf18-3", number: "З-2026-0157", description: "Корпоратив 23 февраля", amount: 2200000, date: "22.02.2026", initiator: "Новикова Е.С.", status: "approved" },
       ],
     },
+    {
+      id: "f19", cfo: "Брокерское обслуживание", article: "Обучение и развитие", category: "Run",
+      plan: 4500000, fact: 4800000, deviation: 300000, execution: 106.7, status: "warning",
+      requests: [
+        { id: "rf19-1", number: "З-2026-0158", description: "Тренинг MiFID II — compliance", amount: 2500000, date: "08.02.2026", initiator: "Иванова М.П.", status: "approved" },
+        { id: "rf19-2", number: "З-2026-0159", description: "Курсы CFA — оплата за 4 сотр.", amount: 2300000, date: "15.02.2026", initiator: "Иванова М.П.", status: "approved" },
+      ],
+    },
+    {
+      id: "f20", cfo: "Казначейство", article: "Страхование", category: "Run",
+      plan: 5200000, fact: 5200000, deviation: 0, execution: 100.0, status: "ok",
+      requests: [
+        { id: "rf20-1", number: "З-2026-0133b", description: "Страхование D&O — ежемесячный платёж", amount: 3200000, date: "12.02.2026", initiator: "Орлова Т.Г.", status: "approved" },
+        { id: "rf20-2", number: "З-2026-0133c", description: "Страхование кибер-рисков", amount: 2000000, date: "18.02.2026", initiator: "Орлова Т.Г.", status: "approved" },
+      ],
+    },
+    {
+      id: "f21", cfo: "Инвестиционный банкинг", article: "Представительские", category: "Run",
+      plan: 6000000, fact: 5400000, deviation: -600000, execution: 90.0, status: "ok",
+      requests: [
+        { id: "rf21-1", number: "З-2026-0127", description: "Деловой ужин — презентация фонда", amount: 2200000, date: "12.02.2026", initiator: "Кузнецов В.А.", status: "approved" },
+        { id: "rf21-2", number: "З-2026-0128", description: "Аренда конференц-зала — roadshow", amount: 3200000, date: "20.02.2026", initiator: "Кузнецов В.А.", status: "approved" },
+      ],
+    },
+    {
+      id: "f22", cfo: "ИТ-департамент", article: "Связь и телеком", category: "Run",
+      plan: 4800000, fact: 5100000, deviation: 300000, execution: 106.3, status: "warning",
+      requests: [
+        { id: "rf22-1", number: "З-2026-0148b", description: "Корпоративная мобильная связь — февраль", amount: 1800000, date: "15.02.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rf22-2", number: "З-2026-0148c", description: "SIP-транки и VoIP — февраль", amount: 1400000, date: "18.02.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rf22-3", number: "З-2026-0148d", description: "Расширение пропускной способности каналов", amount: 1900000, date: "22.02.2026", initiator: "Григорьев А.П.", status: "approved" },
+      ],
+    },
+    {
+      id: "f23", cfo: "Управление активами", article: "Лицензии и подписки", category: "Run",
+      plan: 8500000, fact: 8400000, deviation: -100000, execution: 98.8, status: "ok",
+      requests: [
+        { id: "rf23-1", number: "З-2026-0109b", description: "FactSet — месячная подписка", amount: 3200000, date: "10.02.2026", initiator: "Семёнов Д.К.", status: "approved" },
+        { id: "rf23-2", number: "З-2026-0109c", description: "Capital IQ — подписка", amount: 2800000, date: "15.02.2026", initiator: "Семёнов Д.К.", status: "approved" },
+        { id: "rf23-3", number: "З-2026-0109d", description: "Wind Financial — терминал", amount: 2400000, date: "20.02.2026", initiator: "Семёнов Д.К.", status: "approved" },
+      ],
+    },
+    {
+      id: "f24", cfo: "HR и администрация", article: "Обучение и развитие", category: "Change",
+      plan: 2500000, fact: 2800000, deviation: 300000, execution: 112.0, status: "warning",
+      requests: [
+        { id: "rf24-1", number: "З-2026-0157b", description: "Внедрение LMS-платформы", amount: 1800000, date: "12.02.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rf24-2", number: "З-2026-0157c", description: "Разработка курсов адаптации", amount: 1000000, date: "20.02.2026", initiator: "Новикова Е.С.", status: "pending" },
+      ],
+    },
   ],
   "Март 2026": [
     {
@@ -569,6 +676,58 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       requests: [
         { id: "rm17-1", number: "З-2026-0212", description: "Внедрение HRM-системы — лицензии", amount: 2200000, date: "05.03.2026", initiator: "Новикова Е.С.", status: "approved" },
         { id: "rm17-2", number: "З-2026-0213", description: "Настройка и интеграция HRM с 1С", amount: 1000000, date: "10.03.2026", initiator: "Новикова Е.С.", status: "pending" },
+      ],
+    },
+    {
+      id: "m18", cfo: "Брокерское обслуживание", article: "Обучение и развитие", category: "Run",
+      plan: 4500000, fact: 3800000, deviation: -700000, execution: 84.4, status: "ok",
+      requests: [
+        { id: "rm18-1", number: "З-2026-0214", description: "Программа менторства — запуск", amount: 1500000, date: "05.03.2026", initiator: "Иванова М.П.", status: "approved" },
+        { id: "rm18-2", number: "З-2026-0215", description: "Сертификация ФСФР — 8 сотр.", amount: 1800000, date: "10.03.2026", initiator: "Иванова М.П.", status: "approved" },
+        { id: "rm18-3", number: "З-2026-0216", description: "Вебинар по ESG-инвестициям", amount: 500000, date: "12.03.2026", initiator: "Иванова М.П.", status: "pending" },
+      ],
+    },
+    {
+      id: "m19", cfo: "Казначейство", article: "Страхование", category: "Run",
+      plan: 5200000, fact: 5800000, deviation: 600000, execution: 111.5, status: "warning",
+      requests: [
+        { id: "rm19-1", number: "З-2026-0217", description: "Страхование D&O — расширение покрытия", amount: 3800000, date: "08.03.2026", initiator: "Орлова Т.Г.", status: "approved" },
+        { id: "rm19-2", number: "З-2026-0218", description: "Страхование имущества — доп. объекты", amount: 2000000, date: "12.03.2026", initiator: "Орлова Т.Г.", status: "approved" },
+      ],
+    },
+    {
+      id: "m20", cfo: "Инвестиционный банкинг", article: "Представительские", category: "Run",
+      plan: 6000000, fact: 8500000, deviation: 2500000, execution: 141.7, status: "danger",
+      requests: [
+        { id: "rm20-1", number: "З-2026-0219", description: "Приём делегации — Ближний Восток", amount: 3500000, date: "05.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
+        { id: "rm20-2", number: "З-2026-0220", description: "VIP-ложа — финансовый форум", amount: 2800000, date: "10.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
+        { id: "rm20-3", number: "З-2026-0221", description: "Деловой ужин — закрытие сделки", amount: 2200000, date: "12.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
+      ],
+    },
+    {
+      id: "m21", cfo: "ИТ-департамент", article: "Связь и телеком", category: "Run",
+      plan: 4800000, fact: 4700000, deviation: -100000, execution: 97.9, status: "ok",
+      requests: [
+        { id: "rm21-1", number: "З-2026-0222", description: "Корпоративная мобильная связь — март", amount: 1800000, date: "15.03.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rm21-2", number: "З-2026-0223", description: "VoIP и SIP-транки — март", amount: 1400000, date: "18.03.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rm21-3", number: "З-2026-0224", description: "Обслуживание ВОЛС", amount: 1500000, date: "10.03.2026", initiator: "Григорьев А.П.", status: "approved" },
+      ],
+    },
+    {
+      id: "m22", cfo: "Управление активами", article: "Лицензии и подписки", category: "Run",
+      plan: 8500000, fact: 8800000, deviation: 300000, execution: 103.5, status: "ok",
+      requests: [
+        { id: "rm22-1", number: "З-2026-0225", description: "Bloomberg — месячная подписка", amount: 3800000, date: "10.03.2026", initiator: "Семёнов Д.К.", status: "approved" },
+        { id: "rm22-2", number: "З-2026-0226", description: "Refinitiv Eikon — продление", amount: 2800000, date: "12.03.2026", initiator: "Семёнов Д.К.", status: "approved" },
+        { id: "rm22-3", number: "З-2026-0227", description: "S&P Capital IQ Pro — апгрейд", amount: 2200000, date: "15.03.2026", initiator: "Семёнов Д.К.", status: "pending" },
+      ],
+    },
+    {
+      id: "m23", cfo: "Управление рисками", article: "Лицензии и подписки", category: "Change",
+      plan: 3500000, fact: 4200000, deviation: 700000, execution: 120.0, status: "danger",
+      requests: [
+        { id: "rm23-1", number: "З-2026-0228", description: "Moody's Analytics — новая лицензия", amount: 2800000, date: "08.03.2026", initiator: "Белов К.И.", status: "approved" },
+        { id: "rm23-2", number: "З-2026-0229", description: "MSCI RiskMetrics — подключение", amount: 1400000, date: "12.03.2026", initiator: "Белов К.И.", status: "approved" },
       ],
     },
   ],

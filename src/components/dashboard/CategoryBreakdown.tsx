@@ -43,7 +43,7 @@ const CategoryBreakdown = ({ data }: CategoryBreakdownProps) => {
   const totalPlan = data.reduce((s, d) => s + d.plan, 0);
 
   return (
-    <Card className="border-0 shadow-sm p-5 animate-slide-up" style={{ animationDelay: "250ms" }}>
+    <Card className="border-0 shadow-sm p-5 animate-slide-up h-full flex flex-col" style={{ animationDelay: "250ms" }}>
       <div className="flex items-center gap-2.5 mb-4">
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center">
           <Icon name="Layers" size={16} className="text-white" />
@@ -58,7 +58,7 @@ const CategoryBreakdown = ({ data }: CategoryBreakdownProps) => {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 flex-1">
         {data.map((item) => {
           const config = catConfig[item.category];
           const deviation = item.fact - item.plan;

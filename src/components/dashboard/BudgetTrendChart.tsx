@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
 
 const BudgetTrendChart = ({ data }: BudgetTrendChartProps) => {
   return (
-    <Card className="border-0 shadow-sm p-5 animate-slide-up" style={{ animationDelay: "450ms" }}>
+    <Card className="border-0 shadow-sm p-5 animate-slide-up h-full" style={{ animationDelay: "450ms" }}>
       <div className="mb-4">
         <h3 className="text-base font-semibold text-foreground">
           Динамика исполнения бюджета
