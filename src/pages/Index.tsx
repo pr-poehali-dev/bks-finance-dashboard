@@ -55,7 +55,9 @@ const Index = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <AIInsights />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 mt-6">
           <BudgetTrendChart />
           <ExpenseDonutChart />
         </div>
@@ -68,8 +70,6 @@ const Index = () => {
             <CFOChart />
           </div>
         </div>
-
-        <AIInsights />
       </main>
     </div>
   );
