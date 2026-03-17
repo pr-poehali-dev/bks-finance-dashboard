@@ -1,13 +1,14 @@
 import { Card } from "@/components/ui/card";
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   Legend,
+  LabelList,
 } from "recharts";
 
 interface TooltipEntry {
@@ -16,12 +17,24 @@ interface TooltipEntry {
   color: string;
 }
 
+interface QuarterData {
+  quarter: string;
+  plan: number;
+  fact: number;
+  execution: number;
+}
+
 interface BudgetTrendChartProps {
-  data: { month: string; plan: number; fact: number }[];
+  data: QuarterData[];
 }
 
 const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TooltipEntry[]; label?: string }) => {
   if (!active || !payload?.length) return null;
+  const execEntry = payload.find((e) => e.name === "fact");
+  const planEntry = payload.find((e) => e.name === "plan");
+  const execution = planEntry && execEntry && planEntry.value > 0
+    ? Math.round((execEntry.value / planEntry.value) * 10000) / 100
+    : 0;
   return (
     <div className="bg-white rounded-lg shadow-lg border border-border/60 p-3 text-xs">
       <p className="font-semibold text-foreground mb-1.5">{label}</p>
@@ -34,7 +47,29 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
           <span className="font-semibold text-foreground tabular-nums">₽ {entry.value} млн</span>
         </div>
       ))}
+      <div className="mt-1.5 pt-1.5 border-t border-border/40 flex justify-between">
+        <span className="text-muted-foreground">Исполнение</span>
+        <span className={`font-semibold ${execution >= 100 ? "text-emerald-600" : "text-amber-600"}`}>
+          {execution.toFixed(2)}%
+        </span>
+      </div>
     </div>
+  );
+};
+
+const ExecutionLabel = (props: { x?: number; y?: number; width?: number; value?: number }) => {
+  const { x = 0, y = 0, width = 0, value = 0 } = props;
+  return (
+    <text
+      x={x + width / 2}
+      y={y - 6}
+      fill="#374151"
+      textAnchor="middle"
+      fontSize={11}
+      fontWeight={600}
+    >
+      {value.toFixed(2)}%
+    </text>
   );
 };
 
@@ -46,26 +81,16 @@ const BudgetTrendChart = ({ data }: BudgetTrendChartProps) => {
           Динамика исполнения бюджета
         </h3>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Помесячный план-факт за последние 6 месяцев, млн ₽
+          Квартальный план-факт, млн ₽
         </p>
       </div>
 
       <div className="h-[260px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-            <defs>
-              <linearGradient id="planGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#93bbfd" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="#93bbfd" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="factGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#2563eb" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="#2563eb" stopOpacity={0} />
-              </linearGradient>
-            </defs>
+          <BarChart data={data} margin={{ top: 24, right: 5, left: -20, bottom: 0 }} barCategoryGap="30%">
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="quarter"
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12, fill: "#6b7280" }}
@@ -74,7 +99,6 @@ const BudgetTrendChart = ({ data }: BudgetTrendChartProps) => {
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 12, fill: "#6b7280" }}
-              tickFormatter={(v) => `${v}`}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
@@ -88,25 +112,11 @@ const BudgetTrendChart = ({ data }: BudgetTrendChartProps) => {
                 </span>
               )}
             />
-            <Area
-              type="monotone"
-              dataKey="plan"
-              stroke="#93bbfd"
-              strokeWidth={2}
-              fill="url(#planGrad)"
-              strokeDasharray="6 3"
-              dot={{ r: 3, fill: "#93bbfd", strokeWidth: 0 }}
-            />
-            <Area
-              type="monotone"
-              dataKey="fact"
-              stroke="#2563eb"
-              strokeWidth={2.5}
-              fill="url(#factGrad)"
-              dot={{ r: 3, fill: "#2563eb", strokeWidth: 0 }}
-              activeDot={{ r: 5, fill: "#2563eb", stroke: "#fff", strokeWidth: 2 }}
-            />
-          </AreaChart>
+            <Bar dataKey="plan" fill="#93bbfd" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="fact" fill="#2563eb" radius={[4, 4, 0, 0]}>
+              <LabelList dataKey="execution" content={<ExecutionLabel />} />
+            </Bar>
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </Card>

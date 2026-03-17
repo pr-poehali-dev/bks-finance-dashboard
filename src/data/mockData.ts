@@ -947,38 +947,41 @@ export function getMonthlyTrend(
   category: string,
   article2: string = "Все подстатьи",
   budgetType: string = "Все типы"
-): { month: string; plan: number; fact: number }[] {
-  const monthNames = ["Янв", "Фев", "Мар"];
-  const fullMonths = ["Январь 2026", "Февраль 2026", "Март 2026"];
+): { quarter: string; plan: number; fact: number; execution: number }[] {
+  const q1Months = ["Январь 2026", "Февраль 2026", "Март 2026"];
 
-  const prevMonths = [
-    { month: "Окт", plan: 270, fact: 255 },
-    { month: "Ноя", plan: 285, fact: 278 },
-    { month: "Дек", plan: 310, fact: 325 },
+  const calcQuarter = (months: string[]) => {
+    let plan = 0, fact = 0;
+    for (const m of months) {
+      const data = getFilteredBudgetData(m, cfo, article, category, article2, budgetType);
+      plan += data.reduce((s, r) => s + r.plan, 0);
+      fact += data.reduce((s, r) => s + r.fact, 0);
+    }
+    return {
+      plan: Math.round(plan / 1_000_000),
+      fact: Math.round(fact / 1_000_000),
+    };
+  };
+
+  const q1 = calcQuarter(q1Months);
+  const isFiltered = cfo !== "Все ЦФО" || article !== "Все статьи" || category !== "Все категории" || article2 !== "Все подстатьи" || budgetType !== "Все типы";
+  const scale = isFiltered && q1.plan > 0 ? q1.plan / 825 : 1;
+
+  const prevQuarters = [
+    { quarter: "Q2 2025", plan: Math.round(780 * scale), fact: Math.round(742 * scale) },
+    { quarter: "Q3 2025", plan: Math.round(810 * scale), fact: Math.round(831 * scale) },
+    { quarter: "Q4 2025", plan: Math.round(865 * scale), fact: Math.round(858 * scale) },
   ];
 
-  const current = fullMonths.map((fm, i) => {
-    const data = getFilteredBudgetData(fm, cfo, article, category, article2, budgetType);
-    return {
-      month: monthNames[i],
-      plan: Math.round(data.reduce((s, r) => s + r.plan, 0) / 1_000_000),
-      fact: Math.round(data.reduce((s, r) => s + r.fact, 0) / 1_000_000),
-    };
-  });
+  const quarters = [
+    ...prevQuarters,
+    { quarter: "Q1 2026", plan: q1.plan, fact: q1.fact },
+  ];
 
-  if (cfo !== "Все ЦФО" || article !== "Все статьи" || category !== "Все категории" || article2 !== "Все подстатьи" || budgetType !== "Все типы") {
-    const scale = current.length > 0 && current[0].plan > 0 ? current[0].plan / 275 : 1;
-    return [
-      ...prevMonths.map((m) => ({
-        month: m.month,
-        plan: Math.round(m.plan * scale),
-        fact: Math.round(m.fact * scale),
-      })),
-      ...current,
-    ];
-  }
-
-  return [...prevMonths, ...current];
+  return quarters.map((q) => ({
+    ...q,
+    execution: q.plan > 0 ? Math.round((q.fact / q.plan) * 10000) / 100 : 0,
+  }));
 }
 
 export function getExpenseStructure(
