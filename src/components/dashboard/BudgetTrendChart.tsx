@@ -57,18 +57,30 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
   );
 };
 
-const ExecutionLabel = (props: { x?: number; y?: number; width?: number; value?: number }) => {
-  const { x = 0, y = 0, width = 0, value = 0 } = props;
+const ExecutionLabel = (props: {
+  x?: number;
+  y?: number;
+  width?: number;
+  value?: number;
+  index?: number;
+  data?: QuarterData[];
+}) => {
+  const { x = 0, y = 0, width = 0, index = 0, data = [] } = props;
+  const item = data[index];
+  if (!item) return null;
+  const execution = item.execution;
+  const isOver = execution > 100;
+  const color = isOver ? "#dc2626" : "#16a34a";
   return (
     <text
-      x={x + width / 2}
-      y={y - 6}
-      fill="#374151"
+      x={x + width}
+      y={y - 8}
+      fill={color}
       textAnchor="middle"
       fontSize={11}
-      fontWeight={600}
+      fontWeight={700}
     >
-      {value.toFixed(2)}%
+      {execution.toFixed(2)}%
     </text>
   );
 };
@@ -112,10 +124,13 @@ const BudgetTrendChart = ({ data }: BudgetTrendChartProps) => {
                 </span>
               )}
             />
-            <Bar dataKey="plan" fill="#93bbfd" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="fact" fill="#2563eb" radius={[4, 4, 0, 0]}>
-              <LabelList dataKey="execution" content={<ExecutionLabel />} />
+            <Bar dataKey="plan" fill="#93bbfd" radius={[4, 4, 0, 0]}>
+              <LabelList
+                dataKey="execution"
+                content={(props) => <ExecutionLabel {...props} data={data} />}
+              />
             </Bar>
+            <Bar dataKey="fact" fill="#2563eb" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
