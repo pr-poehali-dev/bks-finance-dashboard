@@ -857,7 +857,7 @@ export function getKPIData(
   
   // Эффективность = (Факт + Остаток) / Резерв по договорам
   const efficiency = totalReserve > 0 
-    ? Math.round(((totalFact + remaining) / totalReserve) * 1000) / 10 
+    ? Math.round(((totalFact + remaining) / totalReserve) * 10000) / 100 
     : 0;
 
   const fmtValue = (v: number) => {
@@ -868,8 +868,8 @@ export function getKPIData(
     return `₽ ${v}`;
   };
 
-  const executionPct = totalPlan > 0 ? Math.round((totalFact / totalPlan) * 1000) / 10 : 0;
-  const remainingPct = totalPlan > 0 ? Math.round((remaining / totalPlan) * 1000) / 10 : 0;
+  const executionPct = totalPlan > 0 ? Math.round((totalFact / totalPlan) * 10000) / 100 : 0;
+  const remainingPct = totalPlan > 0 ? Math.round((remaining / totalPlan) * 10000) / 100 : 0;
 
   return [
     {
