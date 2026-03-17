@@ -1019,6 +1019,38 @@ export function getTrendByPeriod(
   });
 }
 
+export function getArticleBreakdown(
+  period: string,
+  cfo: string,
+  article: string,
+  category: string,
+  budgetType: string = "Все типы"
+): { article: string; plan: number; fact: number; execution: number }[] {
+  const EXCLUDED = ["ФОТ", "Все статьи"];
+  const months = getMonthsForPeriod(period);
+
+  const articlesToShow = article === "Все статьи"
+    ? articleList.filter((a) => !EXCLUDED.includes(a))
+    : [article];
+
+  return articlesToShow.map((art) => {
+    let plan = 0, fact = 0;
+    for (const m of months) {
+      const rows = getFilteredBudgetData(m, cfo, art, category, "Все подстатьи", budgetType);
+      plan += rows.reduce((s, r) => s + r.plan, 0);
+      fact += rows.reduce((s, r) => s + r.fact, 0);
+    }
+    plan = Math.round(plan / 1_000_000);
+    fact = Math.round(fact / 1_000_000);
+    return {
+      article: art,
+      plan,
+      fact,
+      execution: plan > 0 ? Math.round((fact / plan) * 10000) / 100 : 0,
+    };
+  });
+}
+
 export function getExpenseStructure(
   period: string,
   cfo: string,

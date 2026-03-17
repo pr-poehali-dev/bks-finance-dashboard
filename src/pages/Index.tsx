@@ -6,6 +6,7 @@ import BudgetTable from "@/components/dashboard/BudgetTable";
 import CFOChart from "@/components/dashboard/CFOChart";
 import AIInsights from "@/components/dashboard/AIInsights";
 import BudgetTrendChart from "@/components/dashboard/BudgetTrendChart";
+import ArticleBreakdownChart from "@/components/dashboard/ArticleBreakdownChart";
 import ExpenseDonutChart from "@/components/dashboard/ExpenseDonutChart";
 import CategoryBreakdown from "@/components/dashboard/CategoryBreakdown";
 import {
@@ -14,6 +15,7 @@ import {
   getCFOSummary,
   getMonthlyTrend,
   getTrendByPeriod,
+  getArticleBreakdown,
   getExpenseStructure,
   getAIInsights,
   getCategoryBreakdown,
@@ -62,22 +64,9 @@ const Index = () => {
     [selectedPeriod, selectedCfo, selectedCategory, selectedBudgetType]
   );
 
-  const trendOther = useMemo(
-    () => {
-      const all = getTrendByPeriod(selectedPeriod, selectedCfo, "Все статьи", selectedCategory, "Все подстатьи", selectedBudgetType);
-      return all.map((q, i) => {
-        const fotQ = trendFot[i];
-        const plan = Math.max(0, q.plan - (fotQ?.plan ?? 0));
-        const fact = Math.max(0, q.fact - (fotQ?.fact ?? 0));
-        return {
-          ...q,
-          plan,
-          fact,
-          execution: plan > 0 ? Math.round((fact / plan) * 10000) / 100 : 0,
-        };
-      });
-    },
-    [selectedPeriod, selectedCfo, selectedCategory, selectedBudgetType, trendFot]
+  const articleBreakdownData = useMemo(
+    () => getArticleBreakdown(selectedPeriod, selectedCfo, selectedArticle, selectedCategory, selectedBudgetType),
+    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory, selectedBudgetType]
   );
 
   const expenseData = useMemo(
@@ -141,22 +130,21 @@ const Index = () => {
           <CategoryBreakdown data={categoryData} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <BudgetTrendChart
             data={trendFot}
             title="Персонал (ФОТ)"
-            subtitle="Квартальный план-факт, млн ₽"
+            subtitle="План-факт по периодам, млн ₽"
           />
           <BudgetTrendChart
             data={trendBonuses}
             title="Бонусы"
-            subtitle="Квартальный план-факт, млн ₽"
+            subtitle="План-факт по периодам, млн ₽"
           />
-          <BudgetTrendChart
-            data={trendOther}
-            title="Прочие статьи"
-            subtitle="Квартальный план-факт, млн ₽"
-          />
+        </div>
+
+        <div className="mb-6">
+          <ArticleBreakdownChart data={articleBreakdownData} period={selectedPeriod} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
