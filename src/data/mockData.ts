@@ -10,11 +10,15 @@ export interface RequestItem {
 
 export type BudgetCategory = "Run" | "Change";
 
+export type BudgetType = "P/L" | "Cash";
+
 export interface BudgetRow {
   id: string;
   cfo: string;
   article: string;
+  article2: string;
   category: BudgetCategory;
+  budgetType: BudgetType;
   plan: number;
   fact: number;
   deviation: number;
@@ -69,6 +73,34 @@ export const articleList = [
   "Прочие расходы",
 ];
 
+export const articleHierarchy: Record<string, string[]> = {
+  "ФОТ": ["Оклады и ставки", "Премии и бонусы", "ДМС и страхование", "Компенсации"],
+  "Аренда и содержание": ["Аренда офисов", "Коммунальные услуги", "Ремонт и обслуживание"],
+  "ИТ-инфраструктура": ["Серверы и хостинг", "Лицензии ПО", "Кибербезопасность", "Техподдержка"],
+  "Маркетинг и реклама": ["Digital-маркетинг", "Брендинг и PR", "Мероприятия и спонсорство"],
+  "Командировочные": ["Перелёты и проезд", "Проживание", "Суточные и представительские"],
+  "Консалтинг и аудит": ["Юридический консалтинг", "Финансовый аудит", "Стратегический консалтинг"],
+  "Амортизация": ["Амортизация ОС", "Амортизация НМА"],
+  "Обучение и развитие": ["Сертификация", "Тренинги и курсы", "Менторские программы"],
+  "Страхование": ["D&O страхование", "Имущественное страхование", "Профессиональная ответственность"],
+  "Представительские": ["Деловые встречи", "VIP-мероприятия", "Корпоративные подарки"],
+  "Связь и телеком": ["Мобильная связь", "VoIP и SIP", "Интернет и каналы"],
+  "Лицензии и подписки": ["Аналитические платформы", "Информационные терминалы", "ESG и рейтинги"],
+  "Прочие расходы": ["Канцелярия", "Подписки на СМИ", "Непредвиденные расходы"],
+};
+
+export function getArticle2List(article: string): string[] {
+  if (article === "Все статьи") {
+    const all = Object.values(articleHierarchy).flat();
+    return ["Все подстатьи", ...all];
+  }
+  const subs = articleHierarchy[article];
+  if (!subs) return ["Все подстатьи"];
+  return ["Все подстатьи", ...subs];
+}
+
+export const budgetTypeList = ["Все типы", "P/L", "Cash"];
+
 export const periodOptions = [
   "Январь 2026",
   "Февраль 2026",
@@ -78,12 +110,10 @@ export const periodOptions = [
   "2026 год",
 ];
 
-// === FULL BUDGET DATA WITH Run/Change AND LOTS OF REQUESTS ===
-
 const allBudgetData: Record<string, BudgetRow[]> = {
   "Январь 2026": [
     {
-      id: "j1", cfo: "Управление активами", article: "ФОТ", category: "Run",
+      id: "j1", cfo: "Управление активами", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 42000000, fact: 39800000, deviation: -2200000, execution: 94.8, status: "ok",
       requests: [
         { id: "rj1-1", number: "З-2026-0001", description: "Оклады — аналитики, январь", amount: 28500000, date: "10.01.2026", initiator: "Козлов А.В.", status: "approved" },
@@ -92,7 +122,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j2", cfo: "Управление активами", article: "ИТ-инфраструктура", category: "Run",
+      id: "j2", cfo: "Управление активами", article: "ИТ-инфраструктура", article2: "Лицензии ПО", category: "Run", budgetType: "Cash",
       plan: 15000000, fact: 14200000, deviation: -800000, execution: 94.7, status: "ok",
       requests: [
         { id: "rj2-1", number: "З-2026-0010", description: "Лицензии Bloomberg Terminal — продление", amount: 6200000, date: "20.01.2026", initiator: "Семёнов Д.К.", status: "approved" },
@@ -101,7 +131,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j3", cfo: "Управление активами", article: "ИТ-инфраструктура", category: "Change",
+      id: "j3", cfo: "Управление активами", article: "ИТ-инфраструктура", article2: "Серверы и хостинг", category: "Change", budgetType: "Cash",
       plan: 8000000, fact: 7500000, deviation: -500000, execution: 93.8, status: "ok",
       requests: [
         { id: "rj3-1", number: "З-2026-0013", description: "Внедрение модуля аналитики портфелей", amount: 5200000, date: "25.01.2026", initiator: "Семёнов Д.К.", status: "approved" },
@@ -109,7 +139,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j4", cfo: "Брокерское обслуживание", article: "ФОТ", category: "Run",
+      id: "j4", cfo: "Брокерское обслуживание", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 66000000, fact: 65200000, deviation: -800000, execution: 98.8, status: "ok",
       requests: [
         { id: "rj4-1", number: "З-2026-0020", description: "Оклады — отдел продаж, январь", amount: 42000000, date: "10.01.2026", initiator: "Иванова М.П.", status: "approved" },
@@ -119,7 +149,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j5", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", category: "Run",
+      id: "j5", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", article2: "Digital-маркетинг", category: "Run", budgetType: "P/L",
       plan: 12000000, fact: 11800000, deviation: -200000, execution: 98.3, status: "ok",
       requests: [
         { id: "rj5-1", number: "З-2026-0030", description: "Контекстная реклама — Яндекс.Директ", amount: 4500000, date: "08.01.2026", initiator: "Сидоров Р.Н.", status: "approved" },
@@ -129,7 +159,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j6", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", category: "Change",
+      id: "j6", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", article2: "Брендинг и PR", category: "Change", budgetType: "Cash",
       plan: 10000000, fact: 15200000, deviation: 5200000, execution: 152.0, status: "danger",
       requests: [
         { id: "rj6-1", number: "З-2026-0034", description: "Запуск digital-кампании «Инвестируй легко»", amount: 8500000, date: "22.01.2026", initiator: "Сидоров Р.Н.", status: "approved" },
@@ -138,7 +168,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j7", cfo: "Инвестиционный банкинг", article: "ФОТ", category: "Run",
+      id: "j7", cfo: "Инвестиционный банкинг", article: "ФОТ", article2: "Премии и бонусы", category: "Run", budgetType: "P/L",
       plan: 58000000, fact: 57200000, deviation: -800000, execution: 98.6, status: "ok",
       requests: [
         { id: "rj7-1", number: "З-2026-0040", description: "Оклады — инвестбанкиры, январь", amount: 38000000, date: "10.01.2026", initiator: "Кузнецов В.А.", status: "approved" },
@@ -147,7 +177,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j8", cfo: "Инвестиционный банкинг", article: "Консалтинг и аудит", category: "Run",
+      id: "j8", cfo: "Инвестиционный банкинг", article: "Консалтинг и аудит", article2: "Финансовый аудит", category: "Run", budgetType: "Cash",
       plan: 8000000, fact: 7800000, deviation: -200000, execution: 97.5, status: "ok",
       requests: [
         { id: "rj8-1", number: "З-2026-0045", description: "Аудит сделок M&A — PwC", amount: 5400000, date: "25.01.2026", initiator: "Кузнецов В.А.", status: "approved" },
@@ -155,7 +185,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j9", cfo: "Инвестиционный банкинг", article: "Консалтинг и аудит", category: "Change",
+      id: "j9", cfo: "Инвестиционный банкинг", article: "Консалтинг и аудит", article2: "Юридический консалтинг", category: "Change", budgetType: "Cash",
       plan: 5000000, fact: 4800000, deviation: -200000, execution: 96.0, status: "ok",
       requests: [
         { id: "rj9-1", number: "З-2026-0047", description: "Юридический консалтинг — подготовка IPO", amount: 3200000, date: "27.01.2026", initiator: "Кузнецов В.А.", status: "approved" },
@@ -163,7 +193,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j10", cfo: "Казначейство", article: "ФОТ", category: "Run",
+      id: "j10", cfo: "Казначейство", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 29500000, fact: 29300000, deviation: -200000, execution: 99.3, status: "ok",
       requests: [
         { id: "rj10-1", number: "З-2026-0050", description: "Оклады — казначейство, январь", amount: 22000000, date: "10.01.2026", initiator: "Орлова Т.Г.", status: "approved" },
@@ -172,7 +202,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j11", cfo: "Казначейство", article: "Амортизация", category: "Run",
+      id: "j11", cfo: "Казначейство", article: "Амортизация", article2: "Амортизация ОС", category: "Run", budgetType: "P/L",
       plan: 7300000, fact: 7300000, deviation: 0, execution: 100.0, status: "ok",
       requests: [
         { id: "rj11-1", number: "З-2026-0055", description: "Амортизация ОС — январь (план)", amount: 4600000, date: "15.01.2026", initiator: "Орлова Т.Г.", status: "approved" },
@@ -180,7 +210,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j12", cfo: "Управление рисками", article: "ИТ-инфраструктура", category: "Run",
+      id: "j12", cfo: "Управление рисками", article: "ИТ-инфраструктура", article2: "Лицензии ПО", category: "Run", budgetType: "Cash",
       plan: 12000000, fact: 11500000, deviation: -500000, execution: 95.8, status: "ok",
       requests: [
         { id: "rj12-1", number: "З-2026-0060", description: "Лицензии SAS Risk Management", amount: 7200000, date: "28.01.2026", initiator: "Белов К.И.", status: "approved" },
@@ -188,60 +218,61 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j13", cfo: "Управление рисками", article: "ИТ-инфраструктура", category: "Change",
+      id: "j13", cfo: "Управление рисками", article: "ИТ-инфраструктура", article2: "Кибербезопасность", category: "Change", budgetType: "Cash",
       plan: 6000000, fact: 9800000, deviation: 3800000, execution: 163.3, status: "danger",
       requests: [
         { id: "rj13-1", number: "З-2026-0062", description: "Обновление системы риск-мониторинга (внеплан)", amount: 6500000, date: "25.01.2026", initiator: "Белов К.И.", status: "approved" },
-        { id: "rj13-2", number: "З-2026-0063", description: "Интеграция с новой торговой платформой", amount: 3300000, date: "28.01.2026", initiator: "Белов К.И.", status: "approved" },
+        { id: "rj13-2", number: "З-2026-0063", description: "Интеграция с новой торговой платформой", amount: 3300000, date: "28.01.2026", initiator: "Белов К.И.", status: "pending" },
       ],
     },
     {
-      id: "j14", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", category: "Run",
+      id: "j14", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", article2: "Серверы и хостинг", category: "Run", budgetType: "Cash",
       plan: 38000000, fact: 37200000, deviation: -800000, execution: 97.9, status: "ok",
       requests: [
         { id: "rj14-1", number: "З-2026-0070", description: "Датацентр — аренда стоек, январь", amount: 16000000, date: "12.01.2026", initiator: "Григорьев А.П.", status: "approved" },
-        { id: "rj14-2", number: "З-2026-0071", description: "Лицензии Microsoft 365", amount: 9500000, date: "15.01.2026", initiator: "Григорьев А.П.", status: "approved" },
-        { id: "rj14-3", number: "З-2026-0072", description: "Кибербезопасность — Kaspersky, CrowdStrike", amount: 8500000, date: "18.01.2026", initiator: "Григорьев А.П.", status: "approved" },
-        { id: "rj14-4", number: "З-2026-0073", description: "Каналы связи и интернет", amount: 3200000, date: "20.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rj14-2", number: "З-2026-0071", description: "Кибербезопасность — SOC-мониторинг", amount: 8500000, date: "15.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rj14-3", number: "З-2026-0072", description: "Обновление сетевого оборудования", amount: 5200000, date: "18.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rj14-4", number: "З-2026-0073", description: "Лицензии VMware — продление", amount: 4500000, date: "22.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rj14-5", number: "З-2026-0074", description: "Мониторинг инфраструктуры — Zabbix", amount: 3000000, date: "25.01.2026", initiator: "Григорьев А.П.", status: "approved" },
       ],
     },
     {
-      id: "j15", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", category: "Change",
-      plan: 12000000, fact: 11200000, deviation: -800000, execution: 93.3, status: "ok",
+      id: "j15", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", article2: "Кибербезопасность", category: "Change", budgetType: "Cash",
+      plan: 12000000, fact: 11800000, deviation: -200000, execution: 98.3, status: "ok",
       requests: [
-        { id: "rj15-1", number: "З-2026-0074", description: "Сетевое оборудование Cisco — обновление ядра", amount: 7800000, date: "22.01.2026", initiator: "Григорьев А.П.", status: "approved" },
-        { id: "rj15-2", number: "З-2026-0075", description: "Миграция почты на Exchange Online", amount: 3400000, date: "25.01.2026", initiator: "Григорьев А.П.", status: "pending" },
+        { id: "rj15-1", number: "З-2026-0075", description: "Внедрение SIEM — Splunk", amount: 7800000, date: "20.01.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rj15-2", number: "З-2026-0075b", description: "Пентест — внешний подрядчик", amount: 4000000, date: "28.01.2026", initiator: "Григорьев А.П.", status: "approved" },
       ],
     },
     {
-      id: "j16", cfo: "ИТ-департамент", article: "Командировочные", category: "Run",
-      plan: 2500000, fact: 3800000, deviation: 1300000, execution: 152.0, status: "danger",
+      id: "j16", cfo: "ИТ-департамент", article: "Командировочные", article2: "Перелёты и проезд", category: "Run", budgetType: "Cash",
+      plan: 2500000, fact: 3200000, deviation: 700000, execution: 128.0, status: "warning",
       requests: [
-        { id: "rj16-1", number: "З-2026-0078", description: "Внедрение CRM — выезд в Новосибирск", amount: 1800000, date: "18.01.2026", initiator: "Волков С.М.", status: "approved" },
-        { id: "rj16-2", number: "З-2026-0079", description: "Настройка сети — филиал Казань", amount: 1200000, date: "25.01.2026", initiator: "Волков С.М.", status: "approved" },
-        { id: "rj16-3", number: "З-2026-0080", description: "Конференция IT-Security — Москва", amount: 800000, date: "28.01.2026", initiator: "Волков С.М.", status: "approved" },
+        { id: "rj16-1", number: "З-2026-0078", description: "Командировка — настройка филиала Новосибирск", amount: 1200000, date: "22.01.2026", initiator: "Волков С.М.", status: "approved" },
+        { id: "rj16-2", number: "З-2026-0079", description: "Выезд на объект — Краснодар, миграция", amount: 1100000, date: "28.01.2026", initiator: "Волков С.М.", status: "approved" },
+        { id: "rj16-3", number: "З-2026-0080", description: "Аварийный выезд — Казань (внеплан)", amount: 900000, date: "30.01.2026", initiator: "Волков С.М.", status: "approved" },
       ],
     },
     {
-      id: "j17", cfo: "HR и администрация", article: "Аренда и содержание", category: "Run",
-      plan: 12500000, fact: 12300000, deviation: -200000, execution: 98.4, status: "ok",
+      id: "j17", cfo: "HR и администрация", article: "Аренда и содержание", article2: "Аренда офисов", category: "Run", budgetType: "P/L",
+      plan: 12500000, fact: 12500000, deviation: 0, execution: 100.0, status: "ok",
       requests: [
         { id: "rj17-1", number: "З-2026-0085", description: "Аренда офиса — Москва-Сити, январь", amount: 9200000, date: "15.01.2026", initiator: "Новикова Е.С.", status: "approved" },
         { id: "rj17-2", number: "З-2026-0086", description: "Коммунальные платежи — январь", amount: 1800000, date: "20.01.2026", initiator: "Новикова Е.С.", status: "approved" },
-        { id: "rj17-3", number: "З-2026-0087", description: "Клининг и охрана — январь", amount: 1300000, date: "22.01.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rj17-3", number: "З-2026-0087", description: "Клининг и обслуживание", amount: 1500000, date: "25.01.2026", initiator: "Новикова Е.С.", status: "approved" },
       ],
     },
     {
-      id: "j18", cfo: "HR и администрация", article: "ФОТ", category: "Run",
-      plan: 18000000, fact: 17600000, deviation: -400000, execution: 97.8, status: "ok",
+      id: "j18", cfo: "HR и администрация", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
+      plan: 18000000, fact: 17800000, deviation: -200000, execution: 98.9, status: "ok",
       requests: [
         { id: "rj18-1", number: "З-2026-0088", description: "Оклады — HR, бухгалтерия, январь", amount: 12500000, date: "10.01.2026", initiator: "Новикова Е.С.", status: "approved" },
-        { id: "rj18-2", number: "З-2026-0089", description: "Корпоративное обучение — тренинги", amount: 3200000, date: "20.01.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rj18-2", number: "З-2026-0089", description: "Премия — закрытие годового аудита", amount: 3400000, date: "18.01.2026", initiator: "Новикова Е.С.", status: "approved" },
         { id: "rj18-3", number: "З-2026-0090", description: "Рекрутинг — агентства", amount: 1900000, date: "25.01.2026", initiator: "Новикова Е.С.", status: "approved" },
       ],
     },
     {
-      id: "j19", cfo: "HR и администрация", article: "Прочие расходы", category: "Run",
+      id: "j19", cfo: "HR и администрация", article: "Прочие расходы", article2: "Непредвиденные расходы", category: "Run", budgetType: "Cash",
       plan: 3000000, fact: 2800000, deviation: -200000, execution: 93.3, status: "ok",
       requests: [
         { id: "rj19-1", number: "З-2026-0091", description: "Канцтовары и расходные материалы", amount: 800000, date: "15.01.2026", initiator: "Новикова Е.С.", status: "approved" },
@@ -250,7 +281,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j20", cfo: "Управление рисками", article: "ФОТ", category: "Run",
+      id: "j20", cfo: "Управление рисками", article: "ФОТ", article2: "Компенсации", category: "Run", budgetType: "P/L",
       plan: 24000000, fact: 23800000, deviation: -200000, execution: 99.2, status: "ok",
       requests: [
         { id: "rj20-1", number: "З-2026-0064", description: "Оклады — риск-менеджеры, январь", amount: 18000000, date: "10.01.2026", initiator: "Белов К.И.", status: "approved" },
@@ -259,7 +290,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j21", cfo: "Брокерское обслуживание", article: "Обучение и развитие", category: "Run",
+      id: "j21", cfo: "Брокерское обслуживание", article: "Обучение и развитие", article2: "Сертификация", category: "Run", budgetType: "P/L",
       plan: 4500000, fact: 4200000, deviation: -300000, execution: 93.3, status: "ok",
       requests: [
         { id: "rj21-1", number: "З-2026-0094", description: "Тренинг по продажам — внешний провайдер", amount: 2200000, date: "18.01.2026", initiator: "Иванова М.П.", status: "approved" },
@@ -268,7 +299,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j22", cfo: "Управление рисками", article: "Обучение и развитие", category: "Change",
+      id: "j22", cfo: "Управление рисками", article: "Обучение и развитие", article2: "Сертификация", category: "Change", budgetType: "P/L",
       plan: 3000000, fact: 3500000, deviation: 500000, execution: 116.7, status: "warning",
       requests: [
         { id: "rj22-1", number: "З-2026-0097", description: "Программа сертификации PRM — 8 сотр.", amount: 2400000, date: "20.01.2026", initiator: "Белов К.И.", status: "approved" },
@@ -276,7 +307,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j23", cfo: "Казначейство", article: "Страхование", category: "Run",
+      id: "j23", cfo: "Казначейство", article: "Страхование", article2: "D&O страхование", category: "Run", budgetType: "P/L",
       plan: 5200000, fact: 5200000, deviation: 0, execution: 100.0, status: "ok",
       requests: [
         { id: "rj23-1", number: "З-2026-0053", description: "Страхование D&O — годовой полис", amount: 3200000, date: "12.01.2026", initiator: "Орлова Т.Г.", status: "approved" },
@@ -284,7 +315,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j24", cfo: "Инвестиционный банкинг", article: "Представительские", category: "Run",
+      id: "j24", cfo: "Инвестиционный банкинг", article: "Представительские", article2: "Деловые встречи", category: "Run", budgetType: "Cash",
       plan: 6000000, fact: 7200000, deviation: 1200000, execution: 120.0, status: "danger",
       requests: [
         { id: "rj24-1", number: "З-2026-0049", description: "Деловой ужин — клиенты M&A", amount: 2800000, date: "18.01.2026", initiator: "Кузнецов В.А.", status: "approved" },
@@ -293,7 +324,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j25", cfo: "ИТ-департамент", article: "Связь и телеком", category: "Run",
+      id: "j25", cfo: "ИТ-департамент", article: "Связь и телеком", article2: "VoIP и SIP", category: "Run", budgetType: "Cash",
       plan: 4800000, fact: 4600000, deviation: -200000, execution: 95.8, status: "ok",
       requests: [
         { id: "rj25-1", number: "З-2026-0076", description: "Корпоративная мобильная связь — январь", amount: 1800000, date: "15.01.2026", initiator: "Григорьев А.П.", status: "approved" },
@@ -302,7 +333,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "j26", cfo: "Управление активами", article: "Лицензии и подписки", category: "Run",
+      id: "j26", cfo: "Управление активами", article: "Лицензии и подписки", article2: "Аналитические платформы", category: "Run", budgetType: "Cash",
       plan: 8500000, fact: 8200000, deviation: -300000, execution: 96.5, status: "ok",
       requests: [
         { id: "rj26-1", number: "З-2026-0015", description: "Reuters Datastream — годовая подписка", amount: 3800000, date: "10.01.2026", initiator: "Семёнов Д.К.", status: "approved" },
@@ -313,7 +344,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
   ],
   "Февраль 2026": [
     {
-      id: "f1", cfo: "Управление активами", article: "ФОТ", category: "Run",
+      id: "f1", cfo: "Управление активами", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 42000000, fact: 40500000, deviation: -1500000, execution: 96.4, status: "ok",
       requests: [
         { id: "rf1-1", number: "З-2026-0098", description: "Оклады — аналитики, февраль", amount: 28500000, date: "10.02.2026", initiator: "Козлов А.В.", status: "approved" },
@@ -323,7 +354,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f2", cfo: "Управление активами", article: "ИТ-инфраструктура", category: "Run",
+      id: "f2", cfo: "Управление активами", article: "ИТ-инфраструктура", article2: "Серверы и хостинг", category: "Run", budgetType: "Cash",
       plan: 15000000, fact: 14800000, deviation: -200000, execution: 98.7, status: "ok",
       requests: [
         { id: "rf2-1", number: "З-2026-0105", description: "Серверное оборудование — обновление", amount: 8200000, date: "05.02.2026", initiator: "Семёнов Д.К.", status: "approved" },
@@ -332,7 +363,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f3", cfo: "Управление активами", article: "ИТ-инфраструктура", category: "Change",
+      id: "f3", cfo: "Управление активами", article: "ИТ-инфраструктура", article2: "Серверы и хостинг", category: "Change", budgetType: "Cash",
       plan: 8000000, fact: 7200000, deviation: -800000, execution: 90.0, status: "ok",
       requests: [
         { id: "rf3-1", number: "З-2026-0108", description: "СХД — расширение хранилища данных", amount: 4800000, date: "12.02.2026", initiator: "Петров И.С.", status: "approved" },
@@ -340,7 +371,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f4", cfo: "Брокерское обслуживание", article: "ФОТ", category: "Run",
+      id: "f4", cfo: "Брокерское обслуживание", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 66000000, fact: 68400000, deviation: 2400000, execution: 103.6, status: "warning",
       requests: [
         { id: "rf4-1", number: "З-2026-0110", description: "Оклады — отдел продаж, февраль", amount: 42000000, date: "10.02.2026", initiator: "Иванова М.П.", status: "approved" },
@@ -351,7 +382,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f5", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", category: "Run",
+      id: "f5", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", article2: "Мероприятия и спонсорство", category: "Run", budgetType: "P/L",
       plan: 12000000, fact: 11500000, deviation: -500000, execution: 95.8, status: "ok",
       requests: [
         { id: "rf5-1", number: "З-2026-0115", description: "Контекстная реклама — февраль", amount: 4800000, date: "05.02.2026", initiator: "Сидоров Р.Н.", status: "approved" },
@@ -360,7 +391,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f6", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", category: "Change",
+      id: "f6", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", article2: "Digital-маркетинг", category: "Change", budgetType: "Cash",
       plan: 10000000, fact: 14800000, deviation: 4800000, execution: 148.0, status: "danger",
       requests: [
         { id: "rf6-1", number: "З-2026-0118", description: "Внеплановая кампания — таргетинг feb'26", amount: 8900000, date: "18.02.2026", initiator: "Сидоров Р.Н.", status: "approved" },
@@ -369,7 +400,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f7", cfo: "Инвестиционный банкинг", article: "ФОТ", category: "Run",
+      id: "f7", cfo: "Инвестиционный банкинг", article: "ФОТ", article2: "Премии и бонусы", category: "Run", budgetType: "P/L",
       plan: 58000000, fact: 56800000, deviation: -1200000, execution: 97.9, status: "ok",
       requests: [
         { id: "rf7-1", number: "З-2026-0121", description: "Оклады — инвестбанкиры, февраль", amount: 38000000, date: "10.02.2026", initiator: "Кузнецов В.А.", status: "approved" },
@@ -378,7 +409,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f8", cfo: "Инвестиционный банкинг", article: "Консалтинг и аудит", category: "Run",
+      id: "f8", cfo: "Инвестиционный банкинг", article: "Консалтинг и аудит", article2: "Юридический консалтинг", category: "Run", budgetType: "Cash",
       plan: 8000000, fact: 8200000, deviation: 200000, execution: 102.5, status: "ok",
       requests: [
         { id: "rf8-1", number: "З-2026-0125", description: "Юридический консалтинг — структурирование", amount: 4500000, date: "10.02.2026", initiator: "Кузнецов В.А.", status: "approved" },
@@ -386,7 +417,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f9", cfo: "Казначейство", article: "ФОТ", category: "Run",
+      id: "f9", cfo: "Казначейство", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 29500000, fact: 29200000, deviation: -300000, execution: 99.0, status: "ok",
       requests: [
         { id: "rf9-1", number: "З-2026-0130", description: "Оклады — казначейство, февраль", amount: 22000000, date: "10.02.2026", initiator: "Орлова Т.Г.", status: "approved" },
@@ -395,7 +426,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f10", cfo: "Казначейство", article: "Амортизация", category: "Run",
+      id: "f10", cfo: "Казначейство", article: "Амортизация", article2: "Амортизация ОС", category: "Run", budgetType: "P/L",
       plan: 7300000, fact: 7300000, deviation: 0, execution: 100.0, status: "ok",
       requests: [
         { id: "rf10-1", number: "З-2026-0133", description: "Амортизация ОС — февраль (план)", amount: 4600000, date: "15.02.2026", initiator: "Орлова Т.Г.", status: "approved" },
@@ -403,7 +434,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f11", cfo: "Управление рисками", article: "ИТ-инфраструктура", category: "Run",
+      id: "f11", cfo: "Управление рисками", article: "ИТ-инфраструктура", article2: "Лицензии ПО", category: "Run", budgetType: "Cash",
       plan: 12000000, fact: 12800000, deviation: 800000, execution: 106.7, status: "warning",
       requests: [
         { id: "rf11-1", number: "З-2026-0135", description: "Поддержка SAS — расширенная", amount: 8200000, date: "05.02.2026", initiator: "Белов К.И.", status: "approved" },
@@ -411,7 +442,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f12", cfo: "Управление рисками", article: "ИТ-инфраструктура", category: "Change",
+      id: "f12", cfo: "Управление рисками", article: "ИТ-инфраструктура", article2: "Техподдержка", category: "Change", budgetType: "Cash",
       plan: 6000000, fact: 5800000, deviation: -200000, execution: 96.7, status: "ok",
       requests: [
         { id: "rf12-1", number: "З-2026-0137", description: "Внедрение FRTB-модуля", amount: 3800000, date: "10.02.2026", initiator: "Белов К.И.", status: "approved" },
@@ -419,7 +450,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f13", cfo: "Управление рисками", article: "ФОТ", category: "Run",
+      id: "f13", cfo: "Управление рисками", article: "ФОТ", article2: "ДМС и страхование", category: "Run", budgetType: "P/L",
       plan: 24000000, fact: 24200000, deviation: 200000, execution: 100.8, status: "ok",
       requests: [
         { id: "rf13-1", number: "З-2026-0139", description: "Оклады — риск-менеджеры, февраль", amount: 18000000, date: "10.02.2026", initiator: "Белов К.И.", status: "approved" },
@@ -428,7 +459,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f14", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", category: "Run",
+      id: "f14", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", article2: "Серверы и хостинг", category: "Run", budgetType: "Cash",
       plan: 38000000, fact: 37500000, deviation: -500000, execution: 98.7, status: "ok",
       requests: [
         { id: "rf14-1", number: "З-2026-0142", description: "Датацентр — аренда стоек, февраль", amount: 16000000, date: "12.02.2026", initiator: "Григорьев А.П.", status: "approved" },
@@ -439,7 +470,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f15", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", category: "Change",
+      id: "f15", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", article2: "Кибербезопасность", category: "Change", budgetType: "Cash",
       plan: 12000000, fact: 13200000, deviation: 1200000, execution: 110.0, status: "warning",
       requests: [
         { id: "rf15-1", number: "З-2026-0147", description: "Внедрение ServiceNow ITSM", amount: 8500000, date: "10.02.2026", initiator: "Григорьев А.П.", status: "approved" },
@@ -447,7 +478,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f16", cfo: "ИТ-департамент", article: "Командировочные", category: "Run",
+      id: "f16", cfo: "ИТ-департамент", article: "Командировочные", article2: "Проживание", category: "Run", budgetType: "Cash",
       plan: 2500000, fact: 4200000, deviation: 1700000, execution: 168.0, status: "danger",
       requests: [
         { id: "rf16-1", number: "З-2026-0149", description: "Настройка филиала — Екатеринбург", amount: 1600000, date: "08.02.2026", initiator: "Волков С.М.", status: "approved" },
@@ -456,7 +487,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f17", cfo: "HR и администрация", article: "Аренда и содержание", category: "Run",
+      id: "f17", cfo: "HR и администрация", article: "Аренда и содержание", article2: "Аренда офисов", category: "Run", budgetType: "P/L",
       plan: 12500000, fact: 12400000, deviation: -100000, execution: 99.2, status: "ok",
       requests: [
         { id: "rf17-1", number: "З-2026-0152", description: "Аренда офиса — Москва-Сити, февраль", amount: 9200000, date: "15.02.2026", initiator: "Новикова Е.С.", status: "approved" },
@@ -465,7 +496,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f18", cfo: "HR и администрация", article: "ФОТ", category: "Run",
+      id: "f18", cfo: "HR и администрация", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 18000000, fact: 18200000, deviation: 200000, execution: 101.1, status: "ok",
       requests: [
         { id: "rf18-1", number: "З-2026-0155", description: "Оклады — HR, бухгалтерия, февраль", amount: 12500000, date: "10.02.2026", initiator: "Новикова Е.С.", status: "approved" },
@@ -474,7 +505,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f19", cfo: "Брокерское обслуживание", article: "Обучение и развитие", category: "Run",
+      id: "f19", cfo: "Брокерское обслуживание", article: "Обучение и развитие", article2: "Тренинги и курсы", category: "Run", budgetType: "P/L",
       plan: 4500000, fact: 4800000, deviation: 300000, execution: 106.7, status: "warning",
       requests: [
         { id: "rf19-1", number: "З-2026-0158", description: "Тренинг MiFID II — compliance", amount: 2500000, date: "08.02.2026", initiator: "Иванова М.П.", status: "approved" },
@@ -482,7 +513,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f20", cfo: "Казначейство", article: "Страхование", category: "Run",
+      id: "f20", cfo: "Казначейство", article: "Страхование", article2: "Имущественное страхование", category: "Run", budgetType: "P/L",
       plan: 5200000, fact: 5200000, deviation: 0, execution: 100.0, status: "ok",
       requests: [
         { id: "rf20-1", number: "З-2026-0133b", description: "Страхование D&O — ежемесячный платёж", amount: 3200000, date: "12.02.2026", initiator: "Орлова Т.Г.", status: "approved" },
@@ -490,7 +521,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f21", cfo: "Инвестиционный банкинг", article: "Представительские", category: "Run",
+      id: "f21", cfo: "Инвестиционный банкинг", article: "Представительские", article2: "VIP-мероприятия", category: "Run", budgetType: "Cash",
       plan: 6000000, fact: 5400000, deviation: -600000, execution: 90.0, status: "ok",
       requests: [
         { id: "rf21-1", number: "З-2026-0127", description: "Деловой ужин — презентация фонда", amount: 2200000, date: "12.02.2026", initiator: "Кузнецов В.А.", status: "approved" },
@@ -498,7 +529,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f22", cfo: "ИТ-департамент", article: "Связь и телеком", category: "Run",
+      id: "f22", cfo: "ИТ-департамент", article: "Связь и телеком", article2: "Мобильная связь", category: "Run", budgetType: "Cash",
       plan: 4800000, fact: 5100000, deviation: 300000, execution: 106.3, status: "warning",
       requests: [
         { id: "rf22-1", number: "З-2026-0148b", description: "Корпоративная мобильная связь — февраль", amount: 1800000, date: "15.02.2026", initiator: "Григорьев А.П.", status: "approved" },
@@ -507,7 +538,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f23", cfo: "Управление активами", article: "Лицензии и подписки", category: "Run",
+      id: "f23", cfo: "Управление активами", article: "Лицензии и подписки", article2: "Информационные терминалы", category: "Run", budgetType: "Cash",
       plan: 8500000, fact: 8400000, deviation: -100000, execution: 98.8, status: "ok",
       requests: [
         { id: "rf23-1", number: "З-2026-0109b", description: "FactSet — месячная подписка", amount: 3200000, date: "10.02.2026", initiator: "Семёнов Д.К.", status: "approved" },
@@ -516,17 +547,33 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "f24", cfo: "HR и администрация", article: "Обучение и развитие", category: "Change",
+      id: "f24", cfo: "HR и администрация", article: "Прочие расходы", article2: "Непредвиденные расходы", category: "Change", budgetType: "Cash",
       plan: 2500000, fact: 2800000, deviation: 300000, execution: 112.0, status: "warning",
       requests: [
         { id: "rf24-1", number: "З-2026-0157b", description: "Внедрение LMS-платформы", amount: 1800000, date: "12.02.2026", initiator: "Новикова Е.С.", status: "approved" },
         { id: "rf24-2", number: "З-2026-0157c", description: "Разработка курсов адаптации", amount: 1000000, date: "20.02.2026", initiator: "Новикова Е.С.", status: "pending" },
       ],
     },
+    {
+      id: "f25", cfo: "ИТ-департамент", article: "Связь и телеком", article2: "Интернет и каналы", category: "Run", budgetType: "Cash",
+      plan: 3200000, fact: 3100000, deviation: -100000, execution: 96.9, status: "ok",
+      requests: [
+        { id: "rf25-1", number: "З-2026-0148e", description: "Выделенные каналы связи — филиалы", amount: 1800000, date: "10.02.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rf25-2", number: "З-2026-0148f", description: "Интернет — офис Москва-Сити", amount: 1300000, date: "15.02.2026", initiator: "Григорьев А.П.", status: "approved" },
+      ],
+    },
+    {
+      id: "f26", cfo: "Инвестиционный банкинг", article: "Консалтинг и аудит", article2: "Стратегический консалтинг", category: "Change", budgetType: "Cash",
+      plan: 5000000, fact: 4800000, deviation: -200000, execution: 96.0, status: "ok",
+      requests: [
+        { id: "rf26-1", number: "З-2026-0126b", description: "Стратегический консалтинг — McKinsey", amount: 3200000, date: "12.02.2026", initiator: "Кузнецов В.А.", status: "approved" },
+        { id: "rf26-2", number: "З-2026-0126c", description: "Рыночный анализ — новый сегмент", amount: 1600000, date: "22.02.2026", initiator: "Кузнецов В.А.", status: "approved" },
+      ],
+    },
   ],
   "Март 2026": [
     {
-      id: "m1", cfo: "Управление активами", article: "ФОТ", category: "Run",
+      id: "m1", cfo: "Управление активами", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 42000000, fact: 38200000, deviation: -3800000, execution: 90.9, status: "ok",
       requests: [
         { id: "rm1-1", number: "З-2026-0160", description: "Оклады — аналитики, март", amount: 28500000, date: "10.03.2026", initiator: "Козлов А.В.", status: "approved" },
@@ -536,7 +583,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m2", cfo: "Управление активами", article: "ИТ-инфраструктура", category: "Run",
+      id: "m2", cfo: "Управление активами", article: "ИТ-инфраструктура", article2: "Лицензии ПО", category: "Run", budgetType: "Cash",
       plan: 15000000, fact: 13500000, deviation: -1500000, execution: 90.0, status: "ok",
       requests: [
         { id: "rm2-1", number: "З-2026-0164", description: "Обслуживание серверов — март", amount: 4800000, date: "05.03.2026", initiator: "Семёнов Д.К.", status: "approved" },
@@ -545,52 +592,52 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m3", cfo: "Брокерское обслуживание", article: "ФОТ", category: "Run",
+      id: "m3", cfo: "Управление активами", article: "ИТ-инфраструктура", article2: "Серверы и хостинг", category: "Change", budgetType: "Cash",
+      plan: 8000000, fact: 7500000, deviation: -500000, execution: 93.8, status: "ok",
+      requests: [
+        { id: "rm3-1", number: "З-2026-0167", description: "Миграция на облачную инфраструктуру", amount: 5200000, date: "05.03.2026", initiator: "Семёнов Д.К.", status: "approved" },
+        { id: "rm3-2", number: "З-2026-0168", description: "Настройка отказоустойчивости", amount: 2300000, date: "10.03.2026", initiator: "Семёнов Д.К.", status: "approved" },
+      ],
+    },
+    {
+      id: "m4", cfo: "Брокерское обслуживание", article: "ФОТ", article2: "Премии и бонусы", category: "Run", budgetType: "P/L",
       plan: 66000000, fact: 67900000, deviation: 1900000, execution: 102.9, status: "warning",
       requests: [
-        { id: "rm3-1", number: "З-2026-0170", description: "Оклады — отдел продаж, март", amount: 42000000, date: "10.03.2026", initiator: "Иванова М.П.", status: "approved" },
-        { id: "rm3-2", number: "З-2026-0171", description: "Доплата за расширение штата — 3 чел.", amount: 8400000, date: "12.03.2026", initiator: "Иванова М.П.", status: "approved" },
-        { id: "rm3-3", number: "З-2026-0172", description: "Премия по итогам Q1", amount: 12500000, date: "15.03.2026", initiator: "Иванова М.П.", status: "pending" },
-        { id: "rm3-4", number: "З-2026-0173", description: "Компенсация удалённой работы", amount: 5000000, date: "08.03.2026", initiator: "Иванова М.П.", status: "approved" },
+        { id: "rm4-1", number: "З-2026-0170", description: "Оклады — отдел продаж, март", amount: 42000000, date: "10.03.2026", initiator: "Иванова М.П.", status: "approved" },
+        { id: "rm4-2", number: "З-2026-0171", description: "Доплата за расширение штата — 3 чел.", amount: 8400000, date: "12.03.2026", initiator: "Иванова М.П.", status: "approved" },
+        { id: "rm4-3", number: "З-2026-0172", description: "Премия по итогам Q1", amount: 12500000, date: "15.03.2026", initiator: "Иванова М.П.", status: "pending" },
+        { id: "rm4-4", number: "З-2026-0173", description: "Компенсация удалённой работы", amount: 5000000, date: "08.03.2026", initiator: "Иванова М.П.", status: "approved" },
       ],
     },
     {
-      id: "m4", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", category: "Run",
+      id: "m5", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", article2: "Digital-маркетинг", category: "Run", budgetType: "P/L",
       plan: 12000000, fact: 10500000, deviation: -1500000, execution: 87.5, status: "ok",
       requests: [
-        { id: "rm4-1", number: "З-2026-0174", description: "Контекстная реклама — март", amount: 4500000, date: "05.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
-        { id: "rm4-2", number: "З-2026-0175", description: "Партнёрская программа — вебинары", amount: 3200000, date: "10.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
-        { id: "rm4-3", number: "З-2026-0176", description: "Баннерная реклама — РБК", amount: 2800000, date: "12.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
+        { id: "rm5-1", number: "З-2026-0174", description: "Контекстная реклама — март", amount: 4500000, date: "05.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
+        { id: "rm5-2", number: "З-2026-0175", description: "Партнёрская программа — вебинары", amount: 3200000, date: "10.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
+        { id: "rm5-3", number: "З-2026-0176", description: "Баннерная реклама — РБК", amount: 2800000, date: "12.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
       ],
     },
     {
-      id: "m5", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", category: "Change",
+      id: "m6", cfo: "Брокерское обслуживание", article: "Маркетинг и реклама", article2: "Мероприятия и спонсорство", category: "Change", budgetType: "Cash",
       plan: 10000000, fact: 13500000, deviation: 3500000, execution: 135.0, status: "danger",
       requests: [
-        { id: "rm5-1", number: "З-2026-0177", description: "Наружная реклама — Москва, СПб", amount: 6500000, date: "03.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
-        { id: "rm5-2", number: "З-2026-0178", description: "Запуск YouTube-канала — продакшн", amount: 4200000, date: "08.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
-        { id: "rm5-3", number: "З-2026-0179", description: "Инфлюенсер-маркетинг — пилот", amount: 2800000, date: "12.03.2026", initiator: "Сидоров Р.Н.", status: "pending" },
+        { id: "rm6-1", number: "З-2026-0177", description: "Наружная реклама — Москва, СПб", amount: 6500000, date: "03.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
+        { id: "rm6-2", number: "З-2026-0178", description: "Запуск YouTube-канала — продакшн", amount: 4200000, date: "08.03.2026", initiator: "Сидоров Р.Н.", status: "approved" },
+        { id: "rm6-3", number: "З-2026-0179", description: "Инфлюенсер-маркетинг — пилот", amount: 2800000, date: "12.03.2026", initiator: "Сидоров Р.Н.", status: "pending" },
       ],
     },
     {
-      id: "m6", cfo: "Инвестиционный банкинг", article: "ФОТ", category: "Run",
+      id: "m7", cfo: "Инвестиционный банкинг", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 58000000, fact: 55800000, deviation: -2200000, execution: 96.2, status: "ok",
       requests: [
-        { id: "rm6-1", number: "З-2026-0180", description: "Оклады — инвестбанкиры, март", amount: 38000000, date: "10.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
-        { id: "rm6-2", number: "З-2026-0181", description: "Бонусы по сделке IPO", amount: 14800000, date: "15.03.2026", initiator: "Кузнецов В.А.", status: "pending" },
-        { id: "rm6-3", number: "З-2026-0182", description: "Командировочные — Дубай, клиентская встреча", amount: 3000000, date: "08.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
+        { id: "rm7-1", number: "З-2026-0180", description: "Оклады — инвестбанкиры, март", amount: 38000000, date: "10.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
+        { id: "rm7-2", number: "З-2026-0181", description: "Бонусы по сделке IPO", amount: 14800000, date: "15.03.2026", initiator: "Кузнецов В.А.", status: "pending" },
+        { id: "rm7-3", number: "З-2026-0182", description: "Командировочные — Дубай, клиентская встреча", amount: 3000000, date: "08.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
       ],
     },
     {
-      id: "m7", cfo: "Инвестиционный банкинг", article: "Консалтинг и аудит", category: "Change",
-      plan: 5000000, fact: 6200000, deviation: 1200000, execution: 124.0, status: "warning",
-      requests: [
-        { id: "rm7-1", number: "З-2026-0183", description: "Юридическое сопровождение IPO — финал", amount: 4200000, date: "05.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
-        { id: "rm7-2", number: "З-2026-0184", description: "Tax advisory — международная структура", amount: 2000000, date: "10.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
-      ],
-    },
-    {
-      id: "m8", cfo: "Казначейство", article: "ФОТ", category: "Run",
+      id: "m8", cfo: "Казначейство", article: "ФОТ", article2: "Компенсации", category: "Run", budgetType: "P/L",
       plan: 29500000, fact: 28500000, deviation: -1000000, execution: 96.6, status: "ok",
       requests: [
         { id: "rm8-1", number: "З-2026-0185", description: "Оклады — казначейство, март", amount: 22000000, date: "10.03.2026", initiator: "Орлова Т.Г.", status: "approved" },
@@ -599,7 +646,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m9", cfo: "Казначейство", article: "Амортизация", category: "Run",
+      id: "m9", cfo: "Казначейство", article: "Амортизация", article2: "Амортизация НМА", category: "Run", budgetType: "P/L",
       plan: 7300000, fact: 7300000, deviation: 0, execution: 100.0, status: "ok",
       requests: [
         { id: "rm9-1", number: "З-2026-0188", description: "Амортизация ОС — март (план)", amount: 4600000, date: "15.03.2026", initiator: "Орлова Т.Г.", status: "approved" },
@@ -607,7 +654,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m10", cfo: "Управление рисками", article: "ФОТ", category: "Run",
+      id: "m10", cfo: "Управление рисками", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
       plan: 24000000, fact: 23500000, deviation: -500000, execution: 97.9, status: "ok",
       requests: [
         { id: "rm10-1", number: "З-2026-0190", description: "Оклады — риск-менеджеры, март", amount: 18000000, date: "10.03.2026", initiator: "Белов К.И.", status: "approved" },
@@ -616,7 +663,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m11", cfo: "Управление рисками", article: "ИТ-инфраструктура", category: "Change",
+      id: "m11", cfo: "Управление рисками", article: "ИТ-инфраструктура", article2: "Кибербезопасность", category: "Change", budgetType: "Cash",
       plan: 6000000, fact: 8200000, deviation: 2200000, execution: 136.7, status: "danger",
       requests: [
         { id: "rm11-1", number: "З-2026-0193", description: "Внеплановая миграция на новый кластер", amount: 5200000, date: "01.03.2026", initiator: "Белов К.И.", status: "approved" },
@@ -624,7 +671,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m12", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", category: "Run",
+      id: "m12", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", article2: "Серверы и хостинг", category: "Run", budgetType: "Cash",
       plan: 38000000, fact: 36800000, deviation: -1200000, execution: 96.8, status: "ok",
       requests: [
         { id: "rm12-1", number: "З-2026-0195", description: "Датацентр — аренда стоек, март", amount: 16000000, date: "12.03.2026", initiator: "Григорьев А.П.", status: "approved" },
@@ -635,51 +682,51 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m13", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", category: "Change",
+      id: "m13", cfo: "ИТ-департамент", article: "ИТ-инфраструктура", article2: "Техподдержка", category: "Change", budgetType: "Cash",
       plan: 12000000, fact: 14500000, deviation: 2500000, execution: 120.8, status: "danger",
       requests: [
-        { id: "rm13-1", number: "З-2026-0200", description: "Внедрение Kubernetes — прод кластер", amount: 8500000, date: "05.03.2026", initiator: "Григорьев А.П.", status: "approved" },
-        { id: "rm13-2", number: "З-2026-0201", description: "Миграция на PostgreSQL — этап 2", amount: 4000000, date: "10.03.2026", initiator: "Григорьев А.П.", status: "approved" },
-        { id: "rm13-3", number: "З-2026-0202", description: "Автоматизация инфраструктуры — Terraform", amount: 2000000, date: "12.03.2026", initiator: "Григорьев А.П.", status: "pending" },
+        { id: "rm13-1", number: "З-2026-0200", description: "Срочная замена СХД после аварии", amount: 8500000, date: "02.03.2026", initiator: "Григорьев А.П.", status: "approved" },
+        { id: "rm13-2", number: "З-2026-0201", description: "Внедрение DR-решения — Zerto", amount: 6000000, date: "10.03.2026", initiator: "Григорьев А.П.", status: "approved" },
       ],
     },
     {
-      id: "m14", cfo: "ИТ-департамент", article: "Командировочные", category: "Run",
-      plan: 2500000, fact: 4400000, deviation: 1900000, execution: 176.0, status: "danger",
+      id: "m14", cfo: "ИТ-департамент", article: "Командировочные", article2: "Суточные и представительские", category: "Run", budgetType: "Cash",
+      plan: 2500000, fact: 2800000, deviation: 300000, execution: 112.0, status: "warning",
       requests: [
-        { id: "rm14-1", number: "З-2026-0203", description: "Обучение персонала — Казань", amount: 1500000, date: "05.03.2026", initiator: "Волков С.М.", status: "approved" },
-        { id: "rm14-2", number: "З-2026-0204", description: "Внедрение ERP — Ростов", amount: 1800000, date: "10.03.2026", initiator: "Волков С.М.", status: "approved" },
-        { id: "rm14-3", number: "З-2026-0205", description: "Аварийный выезд — Владивосток", amount: 1100000, date: "12.03.2026", initiator: "Волков С.М.", status: "pending" },
+        { id: "rm14-1", number: "З-2026-0202", description: "Командировка — Владивосток, филиал", amount: 1200000, date: "05.03.2026", initiator: "Волков С.М.", status: "approved" },
+        { id: "rm14-2", number: "З-2026-0203", description: "Настройка VPN — Калининград", amount: 800000, date: "10.03.2026", initiator: "Волков С.М.", status: "approved" },
+        { id: "rm14-3", number: "З-2026-0204", description: "Аварийный выезд — Нижний Новгород", amount: 800000, date: "12.03.2026", initiator: "Волков С.М.", status: "approved" },
       ],
     },
     {
-      id: "m15", cfo: "HR и администрация", article: "Аренда и содержание", category: "Run",
-      plan: 12500000, fact: 12400000, deviation: -100000, execution: 99.2, status: "ok",
+      id: "m15", cfo: "HR и администрация", article: "Аренда и содержание", article2: "Ремонт и обслуживание", category: "Run", budgetType: "P/L",
+      plan: 12500000, fact: 13800000, deviation: 1300000, execution: 110.4, status: "warning",
       requests: [
-        { id: "rm15-1", number: "З-2026-0206", description: "Аренда офиса — Москва-Сити, март", amount: 9200000, date: "15.03.2026", initiator: "Новикова Е.С.", status: "approved" },
-        { id: "rm15-2", number: "З-2026-0207", description: "Коммунальные платежи — март", amount: 1800000, date: "20.03.2026", initiator: "Новикова Е.С.", status: "pending" },
-        { id: "rm15-3", number: "З-2026-0208", description: "Замена мебели — 5 этаж", amount: 1400000, date: "08.03.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rm15-1", number: "З-2026-0205", description: "Аренда офиса — Москва-Сити, март", amount: 9200000, date: "15.03.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rm15-2", number: "З-2026-0206", description: "Коммунальные платежи — март", amount: 1800000, date: "20.03.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rm15-3", number: "З-2026-0207", description: "Ремонт серверной — внеплановый", amount: 2800000, date: "08.03.2026", initiator: "Новикова Е.С.", status: "approved" },
       ],
     },
     {
-      id: "m16", cfo: "HR и администрация", article: "ФОТ", category: "Run",
-      plan: 18000000, fact: 17800000, deviation: -200000, execution: 98.9, status: "ok",
+      id: "m16", cfo: "HR и администрация", article: "ФОТ", article2: "Оклады и ставки", category: "Run", budgetType: "P/L",
+      plan: 18000000, fact: 19200000, deviation: 1200000, execution: 106.7, status: "warning",
       requests: [
-        { id: "rm16-1", number: "З-2026-0209", description: "Оклады — HR, бухгалтерия, март", amount: 12500000, date: "10.03.2026", initiator: "Новикова Е.С.", status: "approved" },
-        { id: "rm16-2", number: "З-2026-0210", description: "Подарки 8 Марта — сотрудницы", amount: 1800000, date: "06.03.2026", initiator: "Новикова Е.С.", status: "approved" },
-        { id: "rm16-3", number: "З-2026-0211", description: "Рекрутинг — HeadHunter Premium", amount: 3500000, date: "12.03.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rm16-1", number: "З-2026-0208", description: "Оклады — HR, бухгалтерия, март", amount: 12500000, date: "10.03.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rm16-2", number: "З-2026-0209", description: "Выплата годовых бонусов — HR", amount: 4500000, date: "15.03.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rm16-3", number: "З-2026-0210", description: "Корпоратив 8 Марта", amount: 2200000, date: "07.03.2026", initiator: "Новикова Е.С.", status: "approved" },
       ],
     },
     {
-      id: "m17", cfo: "HR и администрация", article: "Прочие расходы", category: "Change",
-      plan: 2000000, fact: 3200000, deviation: 1200000, execution: 160.0, status: "danger",
+      id: "m17", cfo: "HR и администрация", article: "Прочие расходы", article2: "Непредвиденные расходы", category: "Change", budgetType: "Cash",
+      plan: 3000000, fact: 3600000, deviation: 600000, execution: 120.0, status: "danger",
       requests: [
-        { id: "rm17-1", number: "З-2026-0212", description: "Внедрение HRM-системы — лицензии", amount: 2200000, date: "05.03.2026", initiator: "Новикова Е.С.", status: "approved" },
-        { id: "rm17-2", number: "З-2026-0213", description: "Настройка и интеграция HRM с 1С", amount: 1000000, date: "10.03.2026", initiator: "Новикова Е.С.", status: "pending" },
+        { id: "rm17-1", number: "З-2026-0211", description: "Экстренная закупка мебели — новый этаж", amount: 2200000, date: "05.03.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rm17-2", number: "З-2026-0212", description: "Дезинсекция офиса (внеплан)", amount: 800000, date: "10.03.2026", initiator: "Новикова Е.С.", status: "approved" },
+        { id: "rm17-3", number: "З-2026-0213", description: "Вывоз строительного мусора", amount: 600000, date: "12.03.2026", initiator: "Новикова Е.С.", status: "approved" },
       ],
     },
     {
-      id: "m18", cfo: "Брокерское обслуживание", article: "Обучение и развитие", category: "Run",
+      id: "m18", cfo: "Брокерское обслуживание", article: "Обучение и развитие", article2: "Менторские программы", category: "Run", budgetType: "P/L",
       plan: 4500000, fact: 3800000, deviation: -700000, execution: 84.4, status: "ok",
       requests: [
         { id: "rm18-1", number: "З-2026-0214", description: "Программа менторства — запуск", amount: 1500000, date: "05.03.2026", initiator: "Иванова М.П.", status: "approved" },
@@ -688,7 +735,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m19", cfo: "Казначейство", article: "Страхование", category: "Run",
+      id: "m19", cfo: "Казначейство", article: "Страхование", article2: "Профессиональная ответственность", category: "Run", budgetType: "P/L",
       plan: 5200000, fact: 5800000, deviation: 600000, execution: 111.5, status: "warning",
       requests: [
         { id: "rm19-1", number: "З-2026-0217", description: "Страхование D&O — расширение покрытия", amount: 3800000, date: "08.03.2026", initiator: "Орлова Т.Г.", status: "approved" },
@@ -696,7 +743,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m20", cfo: "Инвестиционный банкинг", article: "Представительские", category: "Run",
+      id: "m20", cfo: "Инвестиционный банкинг", article: "Представительские", article2: "VIP-мероприятия", category: "Run", budgetType: "Cash",
       plan: 6000000, fact: 8500000, deviation: 2500000, execution: 141.7, status: "danger",
       requests: [
         { id: "rm20-1", number: "З-2026-0219", description: "Приём делегации — Ближний Восток", amount: 3500000, date: "05.03.2026", initiator: "Кузнецов В.А.", status: "approved" },
@@ -705,7 +752,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m21", cfo: "ИТ-департамент", article: "Связь и телеком", category: "Run",
+      id: "m21", cfo: "ИТ-департамент", article: "Связь и телеком", article2: "VoIP и SIP", category: "Run", budgetType: "Cash",
       plan: 4800000, fact: 4700000, deviation: -100000, execution: 97.9, status: "ok",
       requests: [
         { id: "rm21-1", number: "З-2026-0222", description: "Корпоративная мобильная связь — март", amount: 1800000, date: "15.03.2026", initiator: "Григорьев А.П.", status: "approved" },
@@ -714,7 +761,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m22", cfo: "Управление активами", article: "Лицензии и подписки", category: "Run",
+      id: "m22", cfo: "Управление активами", article: "Лицензии и подписки", article2: "Аналитические платформы", category: "Run", budgetType: "Cash",
       plan: 8500000, fact: 8800000, deviation: 300000, execution: 103.5, status: "ok",
       requests: [
         { id: "rm22-1", number: "З-2026-0225", description: "Bloomberg — месячная подписка", amount: 3800000, date: "10.03.2026", initiator: "Семёнов Д.К.", status: "approved" },
@@ -723,7 +770,7 @@ const allBudgetData: Record<string, BudgetRow[]> = {
       ],
     },
     {
-      id: "m23", cfo: "Управление рисками", article: "Лицензии и подписки", category: "Change",
+      id: "m23", cfo: "Управление рисками", article: "Лицензии и подписки", article2: "ESG и рейтинги", category: "Change", budgetType: "Cash",
       plan: 3500000, fact: 4200000, deviation: 700000, execution: 120.0, status: "danger",
       requests: [
         { id: "rm23-1", number: "З-2026-0228", description: "Moody's Analytics — новая лицензия", amount: 2800000, date: "08.03.2026", initiator: "Белов К.И.", status: "approved" },
@@ -732,8 +779,6 @@ const allBudgetData: Record<string, BudgetRow[]> = {
     },
   ],
 };
-
-// === HELPER FUNCTIONS FOR DYNAMIC DATA ===
 
 function getMonthsForPeriod(period: string): string[] {
   switch (period) {
@@ -751,7 +796,9 @@ export function getFilteredBudgetData(
   period: string,
   cfo: string,
   article: string,
-  category: string
+  category: string,
+  article2: string = "Все подстатьи",
+  budgetType: string = "Все типы"
 ): BudgetRow[] {
   const months = getMonthsForPeriod(period);
   let rows: BudgetRow[] = [];
@@ -764,7 +811,7 @@ export function getFilteredBudgetData(
   if (months.length > 1) {
     const grouped: Record<string, BudgetRow> = {};
     for (const row of rows) {
-      const key = `${row.cfo}|${row.article}|${row.category}`;
+      const key = `${row.cfo}|${row.article}|${row.article2}|${row.category}|${row.budgetType}`;
       if (!grouped[key]) {
         grouped[key] = { ...row, requests: [...row.requests] };
       } else {
@@ -785,7 +832,9 @@ export function getFilteredBudgetData(
     const cfoMatch = cfo === "Все ЦФО" || row.cfo === cfo;
     const articleMatch = article === "Все статьи" || row.article === article;
     const categoryMatch = category === "Все категории" || row.category === category;
-    return cfoMatch && articleMatch && categoryMatch;
+    const article2Match = article2 === "Все подстатьи" || row.article2 === article2;
+    const budgetTypeMatch = budgetType === "Все типы" || row.budgetType === budgetType;
+    return cfoMatch && articleMatch && categoryMatch && article2Match && budgetTypeMatch;
   });
 }
 
@@ -793,9 +842,11 @@ export function getKPIData(
   period: string,
   cfo: string,
   article: string,
-  category: string
+  category: string,
+  article2: string = "Все подстатьи",
+  budgetType: string = "Все типы"
 ): KPIData[] {
-  const data = getFilteredBudgetData(period, cfo, article, category);
+  const data = getFilteredBudgetData(period, cfo, article, category, article2, budgetType);
   const totalPlan = data.reduce((s, r) => s + r.plan, 0);
   const totalFact = data.reduce((s, r) => s + r.fact, 0);
   const saving = totalPlan - totalFact;
@@ -850,9 +901,11 @@ export function getKPIData(
 export function getCFOSummary(
   period: string,
   article: string,
-  category: string
+  category: string,
+  article2: string = "Все подстатьи",
+  budgetType: string = "Все типы"
 ): { name: string; plan: number; fact: number; execution: number }[] {
-  const data = getFilteredBudgetData(period, "Все ЦФО", article, category);
+  const data = getFilteredBudgetData(period, "Все ЦФО", article, category, article2, budgetType);
   const grouped: Record<string, { plan: number; fact: number }> = {};
 
   for (const row of data) {
@@ -864,8 +917,8 @@ export function getCFOSummary(
   return Object.entries(grouped)
     .map(([name, { plan, fact }]) => ({
       name,
-      plan: Math.round(plan / 1000),
-      fact: Math.round(fact / 1000),
+      plan: Math.round(plan / 1_000_000),
+      fact: Math.round(fact / 1_000_000),
       execution: plan > 0 ? Math.round((fact / plan) * 1000) / 10 : 0,
     }))
     .sort((a, b) => b.plan - a.plan);
@@ -874,7 +927,9 @@ export function getCFOSummary(
 export function getMonthlyTrend(
   cfo: string,
   article: string,
-  category: string
+  category: string,
+  article2: string = "Все подстатьи",
+  budgetType: string = "Все типы"
 ): { month: string; plan: number; fact: number }[] {
   const monthNames = ["Янв", "Фев", "Мар"];
   const fullMonths = ["Январь 2026", "Февраль 2026", "Март 2026"];
@@ -886,7 +941,7 @@ export function getMonthlyTrend(
   ];
 
   const current = fullMonths.map((fm, i) => {
-    const data = getFilteredBudgetData(fm, cfo, article, category);
+    const data = getFilteredBudgetData(fm, cfo, article, category, article2, budgetType);
     return {
       month: monthNames[i],
       plan: Math.round(data.reduce((s, r) => s + r.plan, 0) / 1_000_000),
@@ -894,7 +949,7 @@ export function getMonthlyTrend(
     };
   });
 
-  if (cfo !== "Все ЦФО" || article !== "Все статьи" || category !== "Все категории") {
+  if (cfo !== "Все ЦФО" || article !== "Все статьи" || category !== "Все категории" || article2 !== "Все подстатьи" || budgetType !== "Все типы") {
     const scale = current.length > 0 && current[0].plan > 0 ? current[0].plan / 275 : 1;
     return [
       ...prevMonths.map((m) => ({
@@ -912,9 +967,11 @@ export function getMonthlyTrend(
 export function getExpenseStructure(
   period: string,
   cfo: string,
-  category: string
+  category: string,
+  article2: string = "Все подстатьи",
+  budgetType: string = "Все типы"
 ): { name: string; value: number; fill: string }[] {
-  const data = getFilteredBudgetData(period, cfo, "Все статьи", category);
+  const data = getFilteredBudgetData(period, cfo, "Все статьи", category, article2, budgetType);
   const grouped: Record<string, number> = {};
   for (const row of data) {
     grouped[row.article] = (grouped[row.article] || 0) + row.fact;
@@ -938,9 +995,11 @@ export function getAIInsights(
   period: string,
   cfo: string,
   article: string,
-  category: string
+  category: string,
+  article2: string = "Все подстатьи",
+  budgetType: string = "Все типы"
 ): AIInsight[] {
-  const data = getFilteredBudgetData(period, cfo, article, category);
+  const data = getFilteredBudgetData(period, cfo, article, category, article2, budgetType);
   const insights: AIInsight[] = [];
 
   const dangerRows = data.filter((r) => r.status === "danger").sort((a, b) => b.deviation - a.deviation);
@@ -1015,9 +1074,11 @@ export function getAIInsights(
 export function getCategoryBreakdown(
   period: string,
   cfo: string,
-  article: string
+  article: string,
+  article2: string = "Все подстатьи",
+  budgetType: string = "Все типы"
 ): { category: BudgetCategory; plan: number; fact: number; execution: number }[] {
-  const data = getFilteredBudgetData(period, cfo, article, "Все категории");
+  const data = getFilteredBudgetData(period, cfo, article, "Все категории", article2, budgetType);
   const result: Record<BudgetCategory, { plan: number; fact: number }> = {
     Run: { plan: 0, fact: 0 },
     Change: { plan: 0, fact: 0 },
@@ -1038,7 +1099,6 @@ export function getCategoryBreakdown(
     }));
 }
 
-// Legacy exports for backward compatibility
 export const kpiData = getKPIData("Q1 2026", "Все ЦФО", "Все статьи", "Все категории");
 export const budgetData = getFilteredBudgetData("Q1 2026", "Все ЦФО", "Все статьи", "Все категории");
 export const cfoSummary = getCFOSummary("Q1 2026", "Все статьи", "Все категории");

@@ -21,42 +21,49 @@ import {
 const Index = () => {
   const [selectedCfo, setSelectedCfo] = useState("Все ЦФО");
   const [selectedArticle, setSelectedArticle] = useState("Все статьи");
+  const [selectedArticle2, setSelectedArticle2] = useState("Все подстатьи");
   const [selectedPeriod, setSelectedPeriod] = useState("Q1 2026");
   const [selectedCategory, setSelectedCategory] = useState("Все категории");
+  const [selectedBudgetType, setSelectedBudgetType] = useState("Все типы");
+
+  const handleArticleChange = (value: string) => {
+    setSelectedArticle(value);
+    setSelectedArticle2("Все подстатьи");
+  };
 
   const filteredData = useMemo(
-    () => getFilteredBudgetData(selectedPeriod, selectedCfo, selectedArticle, selectedCategory),
-    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory]
+    () => getFilteredBudgetData(selectedPeriod, selectedCfo, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType),
+    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType]
   );
 
   const kpiData = useMemo(
-    () => getKPIData(selectedPeriod, selectedCfo, selectedArticle, selectedCategory),
-    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory]
+    () => getKPIData(selectedPeriod, selectedCfo, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType),
+    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType]
   );
 
   const cfoData = useMemo(
-    () => getCFOSummary(selectedPeriod, selectedArticle, selectedCategory),
-    [selectedPeriod, selectedArticle, selectedCategory]
+    () => getCFOSummary(selectedPeriod, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType),
+    [selectedPeriod, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType]
   );
 
   const trendData = useMemo(
-    () => getMonthlyTrend(selectedCfo, selectedArticle, selectedCategory),
-    [selectedCfo, selectedArticle, selectedCategory]
+    () => getMonthlyTrend(selectedCfo, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType),
+    [selectedCfo, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType]
   );
 
   const expenseData = useMemo(
-    () => getExpenseStructure(selectedPeriod, selectedCfo, selectedCategory),
-    [selectedPeriod, selectedCfo, selectedCategory]
+    () => getExpenseStructure(selectedPeriod, selectedCfo, selectedCategory, selectedArticle2, selectedBudgetType),
+    [selectedPeriod, selectedCfo, selectedCategory, selectedArticle2, selectedBudgetType]
   );
 
   const insightsData = useMemo(
-    () => getAIInsights(selectedPeriod, selectedCfo, selectedArticle, selectedCategory),
-    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory]
+    () => getAIInsights(selectedPeriod, selectedCfo, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType),
+    [selectedPeriod, selectedCfo, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType]
   );
 
   const categoryData = useMemo(
-    () => getCategoryBreakdown(selectedPeriod, selectedCfo, selectedArticle),
-    [selectedPeriod, selectedCfo, selectedArticle]
+    () => getCategoryBreakdown(selectedPeriod, selectedCfo, selectedArticle, selectedArticle2, selectedBudgetType),
+    [selectedPeriod, selectedCfo, selectedArticle, selectedArticle2, selectedBudgetType]
   );
 
   return (
@@ -77,12 +84,16 @@ const Index = () => {
           <Filters
             selectedCfo={selectedCfo}
             selectedArticle={selectedArticle}
+            selectedArticle2={selectedArticle2}
             selectedPeriod={selectedPeriod}
             selectedCategory={selectedCategory}
+            selectedBudgetType={selectedBudgetType}
             onCfoChange={setSelectedCfo}
-            onArticleChange={setSelectedArticle}
+            onArticleChange={handleArticleChange}
+            onArticle2Change={setSelectedArticle2}
             onPeriodChange={setSelectedPeriod}
             onCategoryChange={setSelectedCategory}
+            onBudgetTypeChange={setSelectedBudgetType}
           />
         </div>
 

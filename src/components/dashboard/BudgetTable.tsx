@@ -60,7 +60,7 @@ const requestStatusConfig = {
 const RequestsPanel = ({ requests }: { requests: RequestItem[] }) => {
   return (
     <TableRow>
-      <TableCell colSpan={8} className="p-0 border-0">
+      <TableCell colSpan={10} className="p-0 border-0">
         <div className="bg-muted/20 border-t border-b border-border/40 px-5 py-3 animate-fade-in">
           <div className="flex items-center gap-2 mb-3">
             <Icon name="FileStack" size={14} className="text-primary" />
@@ -114,6 +114,11 @@ const categoryBadge = {
   Change: { bg: "bg-violet-50", text: "text-violet-700", label: "Change" },
 };
 
+const budgetTypeBadge = {
+  "P/L": { bg: "bg-orange-50", text: "text-orange-700", label: "P/L" },
+  "Cash": { bg: "bg-teal-50", text: "text-teal-700", label: "Cash" },
+};
+
 const BudgetTable = ({ data }: BudgetTableProps) => {
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
@@ -157,8 +162,14 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
               <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Статья
               </TableHead>
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Подстатья
+              </TableHead>
               <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-center w-[70px]">
                 Тип
+              </TableHead>
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-center w-[70px]">
+                Бюджет
               </TableHead>
               <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-right">
                 План
@@ -181,6 +192,7 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
             {data.map((row) => {
               const config = statusConfig[row.status];
               const catBadge = categoryBadge[row.category];
+              const btBadge = budgetTypeBadge[row.budgetType];
               const isExpanded = expandedRow === row.id;
               return (
                 <Fragment key={row.id}>
@@ -201,9 +213,17 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
                     <TableCell className="text-sm text-muted-foreground">
                       {row.article}
                     </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {row.article2}
+                    </TableCell>
                     <TableCell className="text-center">
                       <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${catBadge.bg} ${catBadge.text}`}>
                         {catBadge.label}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${btBadge.bg} ${btBadge.text}`}>
+                        {btBadge.label}
                       </span>
                     </TableCell>
                     <TableCell className="text-sm text-right font-medium tabular-nums">

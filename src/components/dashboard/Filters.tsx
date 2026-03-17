@@ -1,15 +1,19 @@
-import { cfoList, articleList, periodOptions, categoryList } from "@/data/mockData";
+import { cfoList, articleList, periodOptions, categoryList, getArticle2List, budgetTypeList } from "@/data/mockData";
 import Icon from "@/components/ui/icon";
 
 interface FiltersProps {
   selectedCfo: string;
   selectedArticle: string;
+  selectedArticle2: string;
   selectedPeriod: string;
   selectedCategory: string;
+  selectedBudgetType: string;
   onCfoChange: (value: string) => void;
   onArticleChange: (value: string) => void;
+  onArticle2Change: (value: string) => void;
   onPeriodChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
+  onBudgetTypeChange: (value: string) => void;
 }
 
 const SelectField = ({
@@ -51,12 +55,16 @@ const SelectField = ({
 const Filters = ({
   selectedCfo,
   selectedArticle,
+  selectedArticle2,
   selectedPeriod,
   selectedCategory,
+  selectedBudgetType,
   onCfoChange,
   onArticleChange,
+  onArticle2Change,
   onPeriodChange,
   onCategoryChange,
+  onBudgetTypeChange,
 }: FiltersProps) => {
   return (
     <div className="flex flex-wrap gap-3 animate-fade-in" style={{ animationDelay: "100ms" }}>
@@ -79,10 +87,22 @@ const Filters = ({
         icon="Tag"
       />
       <SelectField
+        value={selectedArticle2}
+        onChange={onArticle2Change}
+        options={getArticle2List(selectedArticle)}
+        icon="Tags"
+      />
+      <SelectField
         value={selectedCategory}
         onChange={onCategoryChange}
         options={categoryList}
         icon="Layers"
+      />
+      <SelectField
+        value={selectedBudgetType}
+        onChange={onBudgetTypeChange}
+        options={budgetTypeList}
+        icon="Split"
       />
     </div>
   );
