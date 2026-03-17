@@ -60,7 +60,7 @@ const requestStatusConfig = {
 const RequestsPanel = ({ requests }: { requests: RequestItem[] }) => {
   return (
     <TableRow>
-      <TableCell colSpan={10} className="p-0 border-0">
+      <TableCell colSpan={11} className="p-0 border-0">
         <div className="bg-muted/20 border-t border-b border-border/40 px-5 py-3 animate-fade-in">
           <div className="flex items-center gap-2 mb-3">
             <Icon name="FileStack" size={14} className="text-primary" />
@@ -178,6 +178,9 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
                 Факт
               </TableHead>
               <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-right">
+                Резерв
+              </TableHead>
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-right">
                 Отклонение
               </TableHead>
               <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-right">
@@ -231,6 +234,9 @@ const BudgetTable = ({ data }: BudgetTableProps) => {
                     </TableCell>
                     <TableCell className="text-sm text-right font-medium tabular-nums">
                       ₽ {formatCurrency(row.fact)}
+                    </TableCell>
+                    <TableCell className="text-sm text-right font-medium tabular-nums text-violet-600">
+                      {row.reserve > 0 ? `₽ ${formatCurrency(row.reserve)}` : "—"}
                     </TableCell>
                     <TableCell
                       className={`text-sm text-right font-medium tabular-nums ${

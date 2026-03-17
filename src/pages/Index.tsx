@@ -97,7 +97,7 @@ const Index = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
           {kpiData.map((kpi, idx) => (
             <KPICard key={kpi.title} data={kpi} index={idx} />
           ))}
