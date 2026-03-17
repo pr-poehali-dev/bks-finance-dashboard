@@ -121,8 +121,6 @@ const Index = () => {
           ))}
         </div>
 
-        <AIInsights data={insightsData} />
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 mt-6">
           <div className="lg:col-span-2">
             <BudgetTrendChart data={trendData} />
@@ -147,7 +145,9 @@ const Index = () => {
           <ArticleBreakdownChart data={articleBreakdownData} period={selectedPeriod} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <AIInsights data={insightsData} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 mt-6">
           <ExpenseDonutChart data={expenseData} />
           <CFOChart data={cfoData} />
         </div>
