@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import type { BudgetCategory } from "@/data/mockData";
 
 interface CategoryItem {
@@ -23,24 +24,45 @@ const formatMln = (v: number) => {
 const catConfig = {
   Run: {
     icon: "Play",
-    bg: "bg-blue-50",
-    iconColor: "text-blue-600",
-    barColor: "bg-blue-500",
+    color: "#3b82f6",
     label: "Run — операционные",
     desc: "Текущая деятельность, поддержка",
   },
   Change: {
     icon: "Rocket",
-    bg: "bg-violet-50",
-    iconColor: "text-violet-600",
-    barColor: "bg-violet-500",
+    color: "#8b5cf6",
     label: "Change — проектные",
     desc: "Развитие, трансформация, инвестиции",
   },
 };
 
+interface TooltipProps { active?: boolean; payload?: { payload: { name: string; plan: number; fact: number; execution: number } }[] }
+const CustomTooltip = ({ active, payload }: TooltipProps) => {
+  if (!active || !payload?.length) return null;
+  const { name, plan, fact, execution } = payload[0].payload;
+  return (
+    <div className="bg-card border border-border rounded-lg shadow-lg p-3 text-sm">
+      <p className="font-semibold text-foreground mb-1">{name}</p>
+      <p className="text-muted-foreground">План: <span className="text-foreground font-medium">₽ {formatMln(plan)}</span></p>
+      <p className="text-muted-foreground">Факт: <span className="text-foreground font-medium">₽ {formatMln(fact)}</span></p>
+      <p className="text-muted-foreground">Исполнение: <span className={`font-bold ${execution > 100 ? "text-red-600" : "text-emerald-600"}`}>{execution}%</span></p>
+    </div>
+  );
+};
+
 const CategoryBreakdown = ({ data }: CategoryBreakdownProps) => {
-  const totalPlan = data.reduce((s, d) => s + d.plan, 0);
+  const totalFact = data.reduce((s, d) => s + d.fact, 0);
+
+  const pieData = data.map((item) => ({
+    name: catConfig[item.category].label,
+    value: item.fact,
+    plan: item.plan,
+    fact: item.fact,
+    execution: item.execution,
+    color: catConfig[item.category].color,
+    icon: catConfig[item.category].icon,
+    desc: catConfig[item.category].desc,
+  }));
 
   return (
     <Card className="border-0 shadow-sm p-5 animate-slide-up h-full flex flex-col" style={{ animationDelay: "250ms" }}>
@@ -49,72 +71,55 @@ const CategoryBreakdown = ({ data }: CategoryBreakdownProps) => {
           <Icon name="Layers" size={16} className="text-white" />
         </div>
         <div>
-          <h3 className="text-base font-semibold text-foreground">
-            Run vs Change
-          </h3>
-          <p className="text-xs text-muted-foreground">
-            Операционные расходы и проектные инвестиции
-          </p>
+          <h3 className="text-base font-semibold text-foreground">Run vs Change</h3>
+          <p className="text-xs text-muted-foreground">Операционные расходы и проектные инвестиции</p>
         </div>
       </div>
 
-      <div className="space-y-4 flex-1">
-        {data.map((item) => {
-          const config = catConfig[item.category];
-          const deviation = item.fact - item.plan;
-          const shareOfTotal = totalPlan > 0 ? Math.round((item.plan / totalPlan) * 100) : 0;
+      <div className="flex-1 flex flex-col gap-4">
+        <div className="h-52">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={55}
+                outerRadius={85}
+                paddingAngle={3}
+                dataKey="value"
+              >
+                {pieData.map((entry, i) => (
+                  <Cell key={i} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
 
-          return (
-            <div key={item.category} className="rounded-lg border border-border/40 p-4">
-              <div className="flex items-start gap-3 mb-3">
-                <div className={`w-9 h-9 rounded-lg ${config.bg} flex items-center justify-center flex-shrink-0`}>
-                  <Icon name={config.icon} size={18} className={config.iconColor} />
-                </div>
+        <div className="space-y-3">
+          {pieData.map((item) => {
+            const share = totalFact > 0 ? Math.round((item.fact / totalFact) * 100) : 0;
+            return (
+              <div key={item.name} className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-semibold text-foreground">{config.label}</h4>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                      item.execution <= 100
-                        ? "bg-emerald-50 text-emerald-700"
-                        : item.execution <= 110
-                          ? "bg-amber-50 text-amber-700"
-                          : "bg-red-50 text-red-600"
-                    }`}>
+                  <div className="flex items-center justify-between mb-0.5">
+                    <span className="text-sm font-medium text-foreground truncate">{item.name}</span>
+                    <span className={`text-xs font-bold ml-2 flex-shrink-0 ${item.execution > 100 ? "text-red-600" : "text-emerald-600"}`}>
                       {item.execution}%
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">{config.desc}</p>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>₽ {formatMln(item.fact)} факт</span>
+                    <span className="font-medium">{share}% от итого</span>
+                  </div>
                 </div>
               </div>
-
-              <div className="relative h-2 w-full rounded-full bg-muted mb-3">
-                <div
-                  className={`h-full rounded-full ${config.barColor} transition-all duration-700`}
-                  style={{ width: `${Math.min(item.execution, 100)}%` }}
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">План</p>
-                  <p className="text-sm font-semibold text-foreground tabular-nums">₽ {formatMln(item.plan)}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Факт</p>
-                  <p className="text-sm font-semibold text-foreground tabular-nums">₽ {formatMln(item.fact)}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Доля</p>
-                  <p className={`text-sm font-semibold tabular-nums ${
-                    deviation > 0 ? "text-red-600" : "text-emerald-600"
-                  }`}>
-                    {shareOfTotal}%
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
 
         {data.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-4">Нет данных</p>
