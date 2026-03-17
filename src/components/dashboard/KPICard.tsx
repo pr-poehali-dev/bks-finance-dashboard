@@ -40,7 +40,7 @@ const KPICard = ({ data, index }: KPICardProps) => {
             }`}
           >
             {data.change > 0 ? "+" : ""}
-            {data.change}%
+            {data.change.toFixed(2)}%
           </span>
         )}
       </div>
