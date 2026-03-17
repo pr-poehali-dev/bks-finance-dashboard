@@ -13,6 +13,7 @@ import {
   getKPIData,
   getCFOSummary,
   getMonthlyTrend,
+  getTrendByPeriod,
   getExpenseStructure,
   getAIInsights,
   getCategoryBreakdown,
@@ -52,30 +53,31 @@ const Index = () => {
   );
 
   const trendFot = useMemo(
-    () => getMonthlyTrend(selectedCfo, "ФОТ", selectedCategory, "Все подстатьи", selectedBudgetType),
-    [selectedCfo, selectedCategory, selectedBudgetType]
+    () => getTrendByPeriod(selectedPeriod, selectedCfo, "ФОТ", selectedCategory, "Все подстатьи", selectedBudgetType),
+    [selectedPeriod, selectedCfo, selectedCategory, selectedBudgetType]
   );
 
   const trendBonuses = useMemo(
-    () => getMonthlyTrend(selectedCfo, "ФОТ", selectedCategory, "Премии и бонусы", selectedBudgetType),
-    [selectedCfo, selectedCategory, selectedBudgetType]
+    () => getTrendByPeriod(selectedPeriod, selectedCfo, "ФОТ", selectedCategory, "Премии и бонусы", selectedBudgetType),
+    [selectedPeriod, selectedCfo, selectedCategory, selectedBudgetType]
   );
 
   const trendOther = useMemo(
-    () => getMonthlyTrend(selectedCfo, "Все статьи", selectedCategory, "Все подстатьи", selectedBudgetType).map((q, i) => {
-      const fotQ = trendFot[i];
-      return {
-        ...q,
-        plan: Math.max(0, q.plan - (fotQ?.plan ?? 0)),
-        fact: Math.max(0, q.fact - (fotQ?.fact ?? 0)),
-        execution: (() => {
-          const p = Math.max(0, q.plan - (fotQ?.plan ?? 0));
-          const f = Math.max(0, q.fact - (fotQ?.fact ?? 0));
-          return p > 0 ? Math.round((f / p) * 10000) / 100 : 0;
-        })(),
-      };
-    }),
-    [selectedCfo, selectedCategory, selectedBudgetType, trendFot]
+    () => {
+      const all = getTrendByPeriod(selectedPeriod, selectedCfo, "Все статьи", selectedCategory, "Все подстатьи", selectedBudgetType);
+      return all.map((q, i) => {
+        const fotQ = trendFot[i];
+        const plan = Math.max(0, q.plan - (fotQ?.plan ?? 0));
+        const fact = Math.max(0, q.fact - (fotQ?.fact ?? 0));
+        return {
+          ...q,
+          plan,
+          fact,
+          execution: plan > 0 ? Math.round((fact / plan) * 10000) / 100 : 0,
+        };
+      });
+    },
+    [selectedPeriod, selectedCfo, selectedCategory, selectedBudgetType, trendFot]
   );
 
   const expenseData = useMemo(
