@@ -99,10 +99,12 @@ const SHORT_LABELS: Record<string, string> = {
 };
 
 const ArticleBreakdownChart = ({ data, period }: ArticleBreakdownChartProps) => {
-  const chartData = data.map((d) => ({
-    ...d,
-    label: SHORT_LABELS[d.article] ?? d.article,
-  }));
+  const chartData = [...data]
+    .sort((a, b) => b.plan - a.plan)
+    .map((d) => ({
+      ...d,
+      label: SHORT_LABELS[d.article] ?? d.article,
+    }));
 
   return (
     <Card className="border-0 shadow-sm p-5 animate-slide-up" style={{ animationDelay: "500ms" }}>
