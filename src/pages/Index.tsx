@@ -51,6 +51,33 @@ const Index = () => {
     [selectedCfo, selectedArticle, selectedCategory, selectedArticle2, selectedBudgetType]
   );
 
+  const trendFot = useMemo(
+    () => getMonthlyTrend(selectedCfo, "ФОТ", selectedCategory, "Все подстатьи", selectedBudgetType),
+    [selectedCfo, selectedCategory, selectedBudgetType]
+  );
+
+  const trendBonuses = useMemo(
+    () => getMonthlyTrend(selectedCfo, "ФОТ", selectedCategory, "Премии и бонусы", selectedBudgetType),
+    [selectedCfo, selectedCategory, selectedBudgetType]
+  );
+
+  const trendOther = useMemo(
+    () => getMonthlyTrend(selectedCfo, "Все статьи", selectedCategory, "Все подстатьи", selectedBudgetType).map((q, i) => {
+      const fotQ = trendFot[i];
+      return {
+        ...q,
+        plan: Math.max(0, q.plan - (fotQ?.plan ?? 0)),
+        fact: Math.max(0, q.fact - (fotQ?.fact ?? 0)),
+        execution: (() => {
+          const p = Math.max(0, q.plan - (fotQ?.plan ?? 0));
+          const f = Math.max(0, q.fact - (fotQ?.fact ?? 0));
+          return p > 0 ? Math.round((f / p) * 10000) / 100 : 0;
+        })(),
+      };
+    }),
+    [selectedCfo, selectedCategory, selectedBudgetType, trendFot]
+  );
+
   const expenseData = useMemo(
     () => getExpenseStructure(selectedPeriod, selectedCfo, selectedCategory, selectedArticle2, selectedBudgetType),
     [selectedPeriod, selectedCfo, selectedCategory, selectedArticle2, selectedBudgetType]
@@ -110,6 +137,24 @@ const Index = () => {
             <BudgetTrendChart data={trendData} />
           </div>
           <CategoryBreakdown data={categoryData} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <BudgetTrendChart
+            data={trendFot}
+            title="Персонал (ФОТ)"
+            subtitle="Квартальный план-факт, млн ₽"
+          />
+          <BudgetTrendChart
+            data={trendBonuses}
+            title="Бонусы"
+            subtitle="Квартальный план-факт, млн ₽"
+          />
+          <BudgetTrendChart
+            data={trendOther}
+            title="Прочие статьи"
+            subtitle="Квартальный план-факт, млн ₽"
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

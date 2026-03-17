@@ -26,6 +26,8 @@ interface QuarterData {
 
 interface BudgetTrendChartProps {
   data: QuarterData[];
+  title?: string;
+  subtitle?: string;
 }
 
 const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TooltipEntry[]; label?: string }) => {
@@ -85,15 +87,15 @@ const ExecutionLabel = (props: {
   );
 };
 
-const BudgetTrendChart = ({ data }: BudgetTrendChartProps) => {
+const BudgetTrendChart = ({ data, title = "Динамика исполнения бюджета", subtitle = "Квартальный план-факт, млн ₽" }: BudgetTrendChartProps) => {
   return (
     <Card className="border-0 shadow-sm p-5 animate-slide-up h-full" style={{ animationDelay: "450ms" }}>
       <div className="mb-4">
         <h3 className="text-base font-semibold text-foreground">
-          Динамика исполнения бюджета
+          {title}
         </h3>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Квартальный план-факт, млн ₽
+          {subtitle}
         </p>
       </div>
 
