@@ -9,6 +9,7 @@ import BudgetTrendChart from "@/components/dashboard/BudgetTrendChart";
 import ArticleBreakdownChart from "@/components/dashboard/ArticleBreakdownChart";
 import ExpenseDonutChart from "@/components/dashboard/ExpenseDonutChart";
 import CategoryBreakdown from "@/components/dashboard/CategoryBreakdown";
+import AllocationSankey from "@/components/dashboard/AllocationSankey";
 import {
   getFilteredBudgetData,
   getKPIData,
@@ -147,7 +148,11 @@ const Index = () => {
 
         <AIInsights data={insightsData} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 mt-6">
+        <div className="mb-6 mt-6">
+          <AllocationSankey />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <ExpenseDonutChart data={expenseData} />
           <CFOChart data={cfoData} />
         </div>

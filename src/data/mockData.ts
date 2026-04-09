@@ -1186,6 +1186,104 @@ export function getCategoryBreakdown(
     }));
 }
 
+export interface AllocationActivity {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface AllocationFlow {
+  sourceCfo: string;
+  activity: string;
+  targetCfo: string;
+  article: string;
+  planAmount: number;
+  factAmount: number;
+  sharePercent: number;
+  allocationBasis: "ФОТ" | "Пропорционально" | "Прямая" | "Штатная численность";
+}
+
+export interface AllocationData {
+  activities: AllocationActivity[];
+  flows: AllocationFlow[];
+}
+
+export const allocationActivities: AllocationActivity[] = [
+  { id: "act1", name: "Управление портфелем", description: "Управление инвестиционными портфелями клиентов" },
+  { id: "act2", name: "Брокерские операции", description: "Исполнение клиентских поручений на рынках" },
+  { id: "act3", name: "Инвестиционные сделки", description: "M&A, IPO и структурирование сделок" },
+  { id: "act4", name: "Управление ликвидностью", description: "Казначейские операции и РЕПО" },
+  { id: "act5", name: "Контроль рисков", description: "Мониторинг рыночных и операционных рисков" },
+  { id: "act6", name: "ИТ-поддержка бизнеса", description: "Разработка и поддержка систем" },
+  { id: "act7", name: "Развитие ИТ", description: "Проектные инициативы и автоматизация" },
+  { id: "act8", name: "HR и обеспечение", description: "Кадровое администрирование и офис" },
+];
+
+const allocationFlowsData: AllocationFlow[] = [
+  { sourceCfo: "ИТ-департамент", activity: "ИТ-поддержка бизнеса", targetCfo: "Управление активами", article: "ИТ-инфраструктура", planAmount: 11400000, factAmount: 11040000, sharePercent: 30, allocationBasis: "Штатная численность" },
+  { sourceCfo: "ИТ-департамент", activity: "ИТ-поддержка бизнеса", targetCfo: "Брокерское обслуживание", article: "ИТ-инфраструктура", planAmount: 11400000, factAmount: 11040000, sharePercent: 30, allocationBasis: "Штатная численность" },
+  { sourceCfo: "ИТ-департамент", activity: "ИТ-поддержка бизнеса", targetCfo: "Инвестиционный банкинг", article: "ИТ-инфраструктура", planAmount: 7600000, factAmount: 7360000, sharePercent: 20, allocationBasis: "Штатная численность" },
+  { sourceCfo: "ИТ-департамент", activity: "ИТ-поддержка бизнеса", targetCfo: "Казначейство", article: "ИТ-инфраструктура", planAmount: 3800000, factAmount: 3680000, sharePercent: 10, allocationBasis: "Штатная численность" },
+  { sourceCfo: "ИТ-департамент", activity: "ИТ-поддержка бизнеса", targetCfo: "Управление рисками", article: "ИТ-инфраструктура", planAmount: 3800000, factAmount: 3680000, sharePercent: 10, allocationBasis: "Штатная численность" },
+
+  { sourceCfo: "ИТ-департамент", activity: "Развитие ИТ", targetCfo: "Брокерское обслуживание", article: "ИТ-инфраструктура", planAmount: 7200000, factAmount: 8700000, sharePercent: 40, allocationBasis: "Прямая" },
+  { sourceCfo: "ИТ-департамент", activity: "Развитие ИТ", targetCfo: "Управление активами", article: "ИТ-инфраструктура", planAmount: 5400000, factAmount: 6525000, sharePercent: 30, allocationBasis: "Прямая" },
+  { sourceCfo: "ИТ-департамент", activity: "Развитие ИТ", targetCfo: "Управление рисками", article: "ИТ-инфраструктура", planAmount: 3600000, factAmount: 4350000, sharePercent: 20, allocationBasis: "Прямая" },
+  { sourceCfo: "ИТ-департамент", activity: "Развитие ИТ", targetCfo: "Инвестиционный банкинг", article: "ИТ-инфраструктура", planAmount: 1800000, factAmount: 2175000, sharePercent: 10, allocationBasis: "Прямая" },
+
+  { sourceCfo: "HR и администрация", activity: "HR и обеспечение", targetCfo: "Управление активами", article: "Аренда и содержание", planAmount: 5625000, factAmount: 6210000, sharePercent: 25, allocationBasis: "Штатная численность" },
+  { sourceCfo: "HR и администрация", activity: "HR и обеспечение", targetCfo: "Брокерское обслуживание", article: "Аренда и содержание", planAmount: 6750000, factAmount: 7452000, sharePercent: 30, allocationBasis: "Штатная численность" },
+  { sourceCfo: "HR и администрация", activity: "HR и обеспечение", targetCfo: "Инвестиционный банкинг", article: "Аренда и содержание", planAmount: 4500000, factAmount: 4968000, sharePercent: 20, allocationBasis: "Штатная численность" },
+  { sourceCfo: "HR и администрация", activity: "HR и обеспечение", targetCfo: "Казначейство", article: "Аренда и содержание", planAmount: 2250000, factAmount: 2484000, sharePercent: 10, allocationBasis: "Штатная численность" },
+  { sourceCfo: "HR и администрация", activity: "HR и обеспечение", targetCfo: "Управление рисками", article: "Аренда и содержание", planAmount: 2250000, factAmount: 2484000, sharePercent: 10, allocationBasis: "Штатная численность" },
+  { sourceCfo: "HR и администрация", activity: "HR и обеспечение", targetCfo: "ИТ-департамент", article: "Аренда и содержание", planAmount: 1125000, factAmount: 1242000, sharePercent: 5, allocationBasis: "Штатная численность" },
+
+  { sourceCfo: "Управление рисками", activity: "Контроль рисков", targetCfo: "Управление активами", article: "Консалтинг и аудит", planAmount: 5800000, factAmount: 6210000, sharePercent: 40, allocationBasis: "ФОТ" },
+  { sourceCfo: "Управление рисками", activity: "Контроль рисков", targetCfo: "Брокерское обслуживание", article: "Консалтинг и аудит", planAmount: 4350000, factAmount: 4657000, sharePercent: 30, allocationBasis: "ФОТ" },
+  { sourceCfo: "Управление рисками", activity: "Контроль рисков", targetCfo: "Инвестиционный банкинг", article: "Консалтинг и аудит", planAmount: 2900000, factAmount: 3105000, sharePercent: 20, allocationBasis: "ФОТ" },
+  { sourceCfo: "Управление рисками", activity: "Контроль рисков", targetCfo: "Казначейство", article: "Консалтинг и аудит", planAmount: 1450000, factAmount: 1552000, sharePercent: 10, allocationBasis: "ФОТ" },
+
+  { sourceCfo: "Казначейство", activity: "Управление ликвидностью", targetCfo: "Управление активами", article: "Прочие расходы", planAmount: 2600000, factAmount: 2730000, sharePercent: 52, allocationBasis: "Пропорционально" },
+  { sourceCfo: "Казначейство", activity: "Управление ликвидностью", targetCfo: "Инвестиционный банкинг", article: "Прочие расходы", planAmount: 1400000, factAmount: 1470000, sharePercent: 28, allocationBasis: "Пропорционально" },
+  { sourceCfo: "Казначейство", activity: "Управление ликвидностью", targetCfo: "Брокерское обслуживание", article: "Прочие расходы", planAmount: 1000000, factAmount: 1050000, sharePercent: 20, allocationBasis: "Пропорционально" },
+];
+
+export function getAllocationData(): AllocationData {
+  return {
+    activities: allocationActivities,
+    flows: allocationFlowsData,
+  };
+}
+
+export function getAllocationSummaryByCfo(): {
+  sourceCfo: string;
+  totalPlan: number;
+  totalFact: number;
+  targets: { targetCfo: string; plan: number; fact: number; share: number }[];
+}[] {
+  const grouped: Record<string, { totalPlan: number; totalFact: number; targets: Record<string, { plan: number; fact: number; share: number }> }> = {};
+
+  for (const flow of allocationFlowsData) {
+    if (!grouped[flow.sourceCfo]) grouped[flow.sourceCfo] = { totalPlan: 0, totalFact: 0, targets: {} };
+    grouped[flow.sourceCfo].totalPlan += flow.planAmount;
+    grouped[flow.sourceCfo].totalFact += flow.factAmount;
+    const key = flow.targetCfo;
+    if (!grouped[flow.sourceCfo].targets[key]) grouped[flow.sourceCfo].targets[key] = { plan: 0, fact: 0, share: 0 };
+    grouped[flow.sourceCfo].targets[key].plan += flow.planAmount;
+    grouped[flow.sourceCfo].targets[key].fact += flow.factAmount;
+  }
+
+  return Object.entries(grouped).map(([sourceCfo, data]) => {
+    const targets = Object.entries(data.targets).map(([targetCfo, vals]) => ({
+      targetCfo,
+      plan: vals.plan,
+      fact: vals.fact,
+      share: data.totalPlan > 0 ? Math.round((vals.plan / data.totalPlan) * 1000) / 10 : 0,
+    })).sort((a, b) => b.plan - a.plan);
+    return { sourceCfo, totalPlan: data.totalPlan, totalFact: data.totalFact, targets };
+  }).sort((a, b) => b.totalPlan - a.totalPlan);
+}
+
 export const kpiData = getKPIData("Q1 2026", "Все ЦФО", "Все статьи", "Все категории");
 export const budgetData = getFilteredBudgetData("Q1 2026", "Все ЦФО", "Все статьи", "Все категории");
 export const cfoSummary = getCFOSummary("Q1 2026", "Все статьи", "Все категории");
