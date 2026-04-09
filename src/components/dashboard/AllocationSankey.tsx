@@ -266,30 +266,33 @@ const AllocationSankey = () => {
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
               data={chartData}
-              layout="vertical"
-              margin={{ top: 0, right: 60, left: 0, bottom: 0 }}
-              barSize={22}
+              margin={{ top: 16, right: 8, left: 8, bottom: 40 }}
+              barSize={32}
             >
-              <CartesianGrid horizontal={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis
+                type="category"
+                dataKey="name"
+                tick={{ fontSize: 11, fill: "#64748b" }}
+                axisLine={false}
+                tickLine={false}
+                interval={0}
+                angle={-35}
+                textAnchor="end"
+                height={56}
+              />
+              <YAxis
                 type="number"
                 tickFormatter={(v) => `${(v / 1_000_000).toFixed(0)}`}
                 tick={{ fontSize: 11, fill: "#94a3b8" }}
                 axisLine={false}
                 tickLine={false}
-              />
-              <YAxis
-                type="category"
-                dataKey="name"
-                width={90}
-                tick={{ fontSize: 11, fill: "#64748b" }}
-                axisLine={false}
-                tickLine={false}
+                width={36}
               />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f8fafc" }} />
               <Bar
                 dataKey="value"
-                radius={[0, 4, 4, 0]}
+                radius={[4, 4, 0, 0]}
                 cursor="pointer"
                 onClick={(data: ChartRow) =>
                   setSelectedBar(selectedBar === data.fullName ? null : data.fullName)
@@ -306,9 +309,9 @@ const AllocationSankey = () => {
                 ))}
                 <LabelList
                   dataKey="value"
-                  position="right"
-                  formatter={(v: number) => fmtMln(v)}
-                  style={{ fontSize: 11, fill: "#64748b" }}
+                  position="top"
+                  formatter={(v: number) => `${(v / 1_000_000).toFixed(1)}`}
+                  style={{ fontSize: 10, fill: "#64748b" }}
                 />
               </Bar>
             </BarChart>
